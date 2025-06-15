@@ -1,0 +1,132 @@
+{% extends 'store/base.html' %}
+{% block title %}Contact Us{% endblock %}
+
+{% block content %}
+<!-- Contact Page Styles -->
+<style>
+    .contact-banner {
+        background: linear-gradient(135deg, #ec4899, #f472b6);
+        color: white;
+        padding: 4rem 1rem;
+        text-align: center;
+        border-radius: 0 0 2rem 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-bottom: 3rem;
+    }
+
+    .contact-banner h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+    }
+
+    .contact-banner p {
+        font-size: 1.1rem;
+        margin-top: 0.5rem;
+        color: #fffbe6;
+    }
+
+    .contact-form-section {
+        padding-bottom: 4rem;
+    }
+
+    .contact-form-wrapper {
+        background-color: #fff;
+        border-radius: 1.25rem;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+        padding: 2rem 2.5rem;
+        max-width: 600px;
+        margin: 0 auto;
+        transition: all 0.3s ease;
+    }
+
+    .contact-form-wrapper:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.07);
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #374151;
+    }
+
+    .form-control {
+        border-radius: 0.75rem;
+        border: 1px solid #ddd;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #ec4899;
+        box-shadow: 0 0 0 0.25rem rgba(236, 72, 153, 0.25);
+    }
+
+    .btn-pink {
+        background-color: #ec4899;
+        color: white;
+        border: none;
+        border-radius: 0.75rem;
+        padding: 0.6rem 1.4rem;
+        font-weight: 600;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn-pink:hover {
+        background-color: #db2777;
+        transform: translateY(-2px);
+    }
+
+    .btn-pink i {
+        margin-right: 6px;
+    }
+
+    .alert-success {
+        border-radius: 0.75rem;
+        font-weight: 500;
+        background-color: #d1fae5;
+        color: #065f46;
+        border: 1px solid #10b981;
+    }
+</style>
+
+<!-- Contact Page Banner -->
+<section class="contact-banner">
+    <div class="container">
+        <h1>Let’s Get In Touch</h1>
+        <p>We’d love to hear your questions, feedback, or anything you’d like to share with us.</p>
+    </div>
+</section>
+
+<!-- Contact Form Section -->
+<section class="contact-form-section">
+    <div class="container">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+
+        <div class="contact-form-wrapper">
+            <form method="POST" novalidate>
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="name" class="form-label">Your Name</label>
+                    {{ form.name }}
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Your Email</label>
+                    {{ form.email }}
+                </div>
+                <div class="mb-3">
+                    <label for="message" class="form-label">Message</label>
+                    {{ form.message }}
+                </div>
+                <div class="text-end">
+                    <button type="submit" class="btn btn-pink">
+                        <i class="bi bi-send-fill"></i> Send Message
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

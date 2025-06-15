@@ -1,0 +1,167 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+<style>
+    :root {
+        --primary-color: #ff85a2;
+        --accent-color: #ff85a2;
+        --text-color: #212529;
+        --bg-color: #fefefe;
+        --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        --radius: 16px;
+    }
+
+    body {
+        background: #f9f9f9;
+    }
+
+    .cart-card-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 90vh;
+        animation: fadeInUp 0.8s ease;
+    }
+
+    .cart-card {
+        background: var(--bg-color);
+        border-radius: var(--radius);
+        box-shadow: var(--box-shadow);
+        padding: 40px;
+        max-width: 500px;
+        width: 100%;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .cart-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
+    }
+
+    .cart-header {
+        text-align: center;
+        margin-bottom: 30px;
+        animation: popIn 0.6s ease-out;
+    }
+
+    .cart-header h2 {
+        font-weight: 700;
+        font-size: 28px;
+        color: var(--primary-color);
+        margin-bottom: 10px;
+    }
+
+    .cart-header p {
+        font-size: 15px;
+        color: #666;
+    }
+
+    form .form-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        font-weight: 600;
+        display: block;
+        margin-bottom: 8px;
+        color: var(--text-color);
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: 2px solid #e0e0e0;
+        background-color: #fafafa;
+        transition: 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 4px rgba(255, 111, 97, 0.2);
+        background-color: #fff;
+    }
+
+    .btn-cart-submit {
+        display: inline-block;
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #fff;
+        background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        animation: slideUp 0.7s ease;
+    }
+
+    .btn-cart-submit:hover {
+        box-shadow: 0 8px 20px rgba(255, 111, 97, 0.3);
+        transform: translateY(-2px);
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes popIn {
+        from {
+            transform: scale(0.95);
+            opacity: 0;
+        }
+
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideUp {
+        from {
+            transform: translateY(30px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+</style>
+
+<div class="cart-card-container">
+    <div class="cart-card">
+        <div class="cart-header">
+            <h2>Leave a Review</h2>
+            <p>Your feedback helps us improve</p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                <div class="text-danger small mt-1">{{ field.errors.0 }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <button type="submit" class="btn-cart-submit">
+                <i class="fas fa-paper-plane me-2"></i> Submit Review
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

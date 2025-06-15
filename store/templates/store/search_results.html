@@ -1,0 +1,35 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Search - ShopSphere{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h4>Search Results for: "<strong>{{ query }}</strong>"</h4>
+    <hr>
+    <div class="row">
+        {% for product in results %}
+        <div class="col-md-3 mb-4">
+            <div class="card h-100 shadow-sm">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.title }}">
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">
+                        <a href="{% url 'product_detail' product.id %}" class="text-decoration-none text-dark">
+                            {{ product.title }}
+                        </a>
+                    </h5>
+                    <p class="card-text text-truncate">{{ product.description }}</p>
+                    <div class="mt-auto">
+                        <p class="fw-bold">₹{{ product.price }}</p>
+                        <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary w-100">Add to Cart</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-muted">No products found.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

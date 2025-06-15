@@ -1,0 +1,490 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+<style>
+    :root {
+        --primary-color: #ff85a2;
+        --primary-dark: #e26a8d;
+        --accent-color: #a673ff;
+        --accent-dark: #8e52e2;
+        --light-gray: #f2f2f2;
+        --text-color: #212529;
+        --secondary-color: #fff9fb;
+    }
+
+    .faq-hero {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+        color: white;
+        padding: 4rem 0;
+        margin-bottom: 3rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .faq-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        pointer-events: none;
+        opacity: 0.3;
+    }
+
+    .faq-hero h2 {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        animation: fadeInUp 0.8s ease-out;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .faq-hero p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        animation: fadeInUp 0.8s ease-out 0.2s backwards;
+    }
+
+    .faq-card {
+        background: white;
+        border-radius: 25px;
+        box-shadow: 0 25px 70px rgba(255, 133, 162, 0.1);
+        border: none;
+        overflow: hidden;
+        animation: slideInUp 0.8s ease-out 0.4s backwards;
+        transition: all 0.3s ease;
+    }
+
+    .faq-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 35px 90px rgba(255, 133, 162, 0.15);
+    }
+
+    .faq-card .card-body {
+        padding: 3rem;
+    }
+
+    .faq-title {
+        color: var(--primary-color);
+        font-weight: 700;
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+        text-align: center;
+        position: relative;
+    }
+
+    .faq-title i {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+        -webkit-text-fill-color: transparent;
+        margin-right: 1rem;
+        animation: pulse 2s infinite;
+    }
+
+    .accordion {
+        --bs-accordion-border-radius: 15px;
+        --bs-accordion-border-color: rgba(255, 133, 162, 0.2);
+    }
+
+    .accordion-item {
+        border: 2px solid rgba(255, 133, 162, 0.1);
+        border-radius: 15px !important;
+        margin-bottom: 1rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        animation: fadeInLeft 0.6s ease-out;
+        background: white;
+    }
+
+    .accordion-item:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+
+    .accordion-item:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .accordion-item:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+
+    .accordion-item:nth-child(4) {
+        animation-delay: 0.4s;
+    }
+
+    .accordion-item:nth-child(5) {
+        animation-delay: 0.5s;
+    }
+
+    .accordion-item:hover {
+        transform: translateX(5px);
+        border-color: var(--primary-color);
+        box-shadow: 0 10px 25px rgba(255, 133, 162, 0.1);
+    }
+
+    .accordion-header {
+        border-radius: 15px;
+    }
+
+    .accordion-button {
+        background: linear-gradient(135deg, #fff0f5 0%, #f3e5ff 100%);
+        border: none;
+        border-radius: 15px !important;
+        padding: 1.5rem 2rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: var(--text-color);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .accordion-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 133, 162, 0.1), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .accordion-button:hover::before {
+        left: 100%;
+    }
+
+    .accordion-button:not(.collapsed) {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+        color: white;
+        box-shadow: none;
+    }
+
+    .accordion-button:focus {
+        box-shadow: 0 0 0 0.25rem rgba(255, 133, 162, 0.25);
+        border-color: var(--primary-color);
+    }
+
+    .accordion-button::after {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ff85a2'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+        transition: transform 0.3s ease;
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+
+    .accordion-button:not(.collapsed)::after {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='white'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+        transform: rotate(180deg);
+    }
+
+    .accordion-collapse {
+        border-top: 1px solid rgba(255, 133, 162, 0.2);
+    }
+
+    .accordion-body {
+        padding: 2rem;
+        background: white;
+        color: #4b5563;
+        font-size: 1.05rem;
+        line-height: 1.7;
+        animation: fadeInUp 0.4s ease-out;
+    }
+
+    .faq-search {
+        margin-bottom: 2rem;
+        animation: fadeInDown 0.8s ease-out 0.6s backwards;
+    }
+
+    .search-box {
+        position: relative;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 1rem 1.5rem 1rem 3.5rem;
+        border: 2px solid rgba(255, 133, 162, 0.2);
+        border-radius: 50px;
+        font-size: 1rem;
+        background: white;
+        transition: all 0.3s ease;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(255, 133, 162, 0.25);
+        transform: translateY(-2px);
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 1.25rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--primary-color);
+        font-size: 1.2rem;
+    }
+
+    .no-results {
+        text-align: center;
+        padding: 3rem;
+        color: #6b7280;
+        font-style: italic;
+        display: none;
+    }
+
+    .floating-elements {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .floating-elements::before,
+    .floating-elements::after {
+        content: '';
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        animation: float 6s ease-in-out infinite;
+    }
+
+    .floating-elements::before {
+        width: 200px;
+        height: 200px;
+        top: 20%;
+        right: 10%;
+        animation-delay: 0s;
+    }
+
+    .floating-elements::after {
+        width: 150px;
+        height: 150px;
+        bottom: 20%;
+        left: 10%;
+        animation-delay: 3s;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes float {
+
+        0%,
+        100% {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(-20px);
+        }
+    }
+
+    @keyframes pulse {
+
+        0%,
+        100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.1);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .faq-hero {
+            padding: 3rem 0;
+        }
+
+        .faq-hero h2 {
+            font-size: 2rem;
+        }
+
+        .faq-card .card-body {
+            padding: 2rem;
+        }
+
+        .faq-title {
+            font-size: 2rem;
+        }
+
+        .accordion-button {
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+        }
+
+        .accordion-body {
+            padding: 1.5rem;
+        }
+    }
+</style>
+
+<!-- Hero Section -->
+<section class="faq-hero">
+    <div class="floating-elements"></div>
+    <div class="container text-center position-relative">
+        <h2><i class="fas fa-question-circle me-3"></i>Frequently Asked Questions</h2>
+        <p>Find answers to common questions about our services</p>
+    </div>
+</section>
+
+<!-- FAQ Content -->
+<div class="container mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Search Box -->
+            <div class="faq-search">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Search frequently asked questions..."
+                        id="faqSearch">
+                </div>
+            </div>
+
+            <div class="card faq-card">
+                <div class="card-body">
+                    <h3 class="faq-title">
+                        <i class="fas fa-lightbulb"></i>Got Questions? We've Got Answers!
+                    </h3>
+
+                    <div class="accordion" id="faqAccordion">
+                        {% for faq in faqs %}
+                        <div class="accordion-item" data-question="{{ faq.question|lower }}">
+                            <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="false"
+                                    aria-controls="collapse{{ forloop.counter }}">
+                                    <i class="fas fa-question-circle me-3"></i>
+                                    {{ faq.question }}
+                                </button>
+                            </h2>
+                            <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse"
+                                aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <i class="fas fa-check-circle me-2 text-success"></i>
+                                    {{ faq.answer }}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="no-results" id="noResults">
+                        <i class="fas fa-search fa-3x mb-3 text-muted"></i>
+                        <h4>No matching questions found</h4>
+                        <p>Try searching with different keywords or browse all questions above.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('faqSearch');
+        const accordionItems = document.querySelectorAll('.accordion-item');
+        const noResults = document.getElementById('noResults');
+
+        searchInput.addEventListener('input', function () {
+            const searchTerm = this.value.toLowerCase().trim();
+            let visibleItems = 0;
+
+            accordionItems.forEach(item => {
+                const question = item.getAttribute('data-question');
+                const answerText = item.querySelector('.accordion-body').textContent.toLowerCase();
+
+                if (searchTerm === '' || question.includes(searchTerm) || answerText.includes(searchTerm)) {
+                    item.style.display = 'block';
+                    item.style.animation = 'fadeInLeft 0.4s ease-out';
+                    visibleItems++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            if (visibleItems === 0 && searchTerm !== '') {
+                noResults.style.display = 'block';
+            } else {
+                noResults.style.display = 'none';
+            }
+        });
+
+        // Add smooth scrolling to opened accordion items
+        const accordionButtons = document.querySelectorAll('.accordion-button');
+        accordionButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                setTimeout(() => {
+                    if (!this.classList.contains('collapsed')) {
+                        this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }, 350);
+            });
+        });
+
+        // Add hover effects
+        accordionItems.forEach(item => {
+            item.addEventListener('mouseenter', function () {
+                if (!this.querySelector('.accordion-button').classList.contains('collapsed')) {
+                    return;
+                }
+                this.style.transform = 'translateX(10px)';
+            });
+
+            item.addEventListener('mouseleave', function () {
+                this.style.transform = 'translateX(0)';
+            });
+        });
+    });
+</script>
+{% endblock %}

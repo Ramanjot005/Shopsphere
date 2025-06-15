@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login | ShopSphere</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Poppins:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/a2e0e6e6b1.js" crossorigin="anonymous"></script>
+
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', 'Inter', sans-serif;
+            background: linear-gradient(135deg, #ffe6f0, #fff0f5);
+            overflow-x: hidden;
+            height: 100%;
+        }
+
+        .auth-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .auth-card {
+            display: flex;
+            flex-direction: row;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(255, 105, 135, 0.2);
+            overflow: hidden;
+            max-width: 1050px;
+            width: 100%;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .login-banner {
+            flex: 1.3;
+            background: linear-gradient(rgba(255, 182, 193, 0.7), rgba(255, 192, 203, 0.7)),
+                url('https://cdn.pixabay.com/photo/2017/08/06/00/08/girl-2581913_1280.jpg') center center/cover no-repeat;
+            padding: 3rem;
+            color: #fff;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        .login-banner h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-banner p {
+            font-size: 1.15rem;
+            max-width: 90%;
+            margin: 0 auto 2rem auto;
+            line-height: 1.6;
+        }
+
+        .banner-badges {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .banner-badge {
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+            padding: 0.6rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .banner-badge:hover {
+            transform: scale(1.05);
+        }
+
+        .login-form-container {
+            flex: 1;
+            padding: 3rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-header h2 {
+            color: #e91e63;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: #c2185b;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-floating {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-floating input {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            border-radius: 12px;
+            border: 2px solid #f8bbd0;
+            outline: none;
+            transition: border 0.3s, box-shadow 0.3s;
+        }
+
+        .form-floating label {
+            position: absolute;
+            top: 50%;
+            left: 1rem;
+            transform: translateY(-50%);
+            background: #fff;
+            padding: 0 0.3rem;
+            font-size: 1rem;
+            color: #aaa;
+            pointer-events: none;
+            transition: 0.3s ease;
+        }
+
+        .form-floating input:focus+label,
+        .form-floating input:not(:placeholder-shown)+label {
+            top: 0;
+            left: 0.75rem;
+            font-size: 0.8rem;
+            color: #e91e63;
+        }
+
+        .form-floating input:focus {
+            border-color: #ec407a;
+            box-shadow: 0 0 0 3px rgba(255, 105, 135, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #ec407a, #f06292);
+            border: none;
+            color: #fff;
+            padding: 0.9rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(236, 64, 122, 0.3);
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(45deg, #f06292, #ec407a);
+        }
+
+        .auth-divider {
+            margin: 2rem 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .auth-divider::before {
+            content: '';
+            height: 1px;
+            background: #f8bbd0;
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+        }
+
+        .auth-divider span {
+            position: relative;
+            background: #fff;
+            padding: 0 1rem;
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .social-login {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .social-btn {
+            flex: 1 1 48%;
+            border: 2px solid #f8bbd0;
+            padding: 0.75rem;
+            border-radius: 10px;
+            font-weight: 600;
+            background: #fff;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .social-btn:hover {
+            background: #fce4ec;
+        }
+
+        .auth-footer {
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+
+        .auth-footer a {
+            color: #e91e63;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 991px) {
+            .auth-card {
+                flex-direction: column;
+            }
+
+            .login-banner {
+                min-height: 250px;
+                border-radius: 20px 20px 0 0;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="login-banner">
+                <h1>ShopSphere</h1>
+                <p>Your go-to place for beauty, fashion & lifestyle essentials!</p>
+                <div class="banner-badges">
+                    <div class="banner-badge"><i class="fas fa-shipping-fast"></i> Fast Delivery</div>
+                    <div class="banner-badge"><i class="fas fa-lock"></i> Secure Checkout</div>
+                    <div class="banner-badge"><i class="fas fa-tags"></i> Great Deals</div>
+                </div>
+            </div>
+            <div class="login-form-container">
+                <div class="login-header">
+                    <h2>Welcome Back</h2>
+                    <p>Login to your account to continue shopping</p>
+                </div>
+
+                {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    <i class="fas fa-exclamation-triangle"></i> {{ error }}
+                </div>
+                {% endif %}
+
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                <form method="POST" novalidate>
+                    {% csrf_token %}
+                    <div class="form-floating">
+                        <input type="text" id="username" name="username" placeholder="Username" required>
+                        <label for="username"><i class="fas fa-user"></i> Username</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="password" id="password" name="password" placeholder="Password" required>
+                        <label for="password"><i class="fas fa-lock"></i> Password</label>
+                    </div>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                </form>
+
+                <div class="auth-divider"><span>OR</span></div>
+
+                <div class="social-login">
+                    <div class="social-btn"><i class="fab fa-google"></i> Login with Google</div>
+                    <div class="social-btn"><i class="fab fa-facebook-f"></i> Login with Facebook</div>
+                </div>
+
+                <div class="auth-footer">
+                    <p>Don't have an account? <a href="{% url 'signup' %}">Create one</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

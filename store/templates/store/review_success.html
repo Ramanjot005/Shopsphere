@@ -1,0 +1,273 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+<style>
+    :root {
+        --primary-color: #ff85a2;
+        --primary-dark: #e26a8d;
+        --accent-color: #a673ff;
+        --text-color: #212529;
+        --text-muted: #6c757d;
+        --border-color: #e9ecef;
+        --success-color: #198754;
+        --background-light: #f8f9fa;
+    }
+
+    body {
+        background-color: var(--background-light);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    .review-success-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+    }
+
+    .success-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        border: 1px solid var(--border-color);
+        padding: 3rem;
+        text-align: center;
+        max-width: 500px;
+        width: 100%;
+        position: relative;
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .success-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 1.5rem;
+        background-color: var(--success-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: scaleIn 0.5s ease-out 0.2s backwards;
+    }
+
+    .success-icon i {
+        font-size: 2rem;
+        color: white;
+    }
+
+    .success-title {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 0.75rem;
+        animation: fadeInUp 0.6s ease-out 0.3s backwards;
+    }
+
+    .success-message {
+        font-size: 1rem;
+        color: var(--text-muted);
+        line-height: 1.6;
+        margin-bottom: 2rem;
+        animation: fadeInUp 0.6s ease-out 0.4s backwards;
+    }
+
+    .review-status {
+        background-color: #f0f9ff;
+        border: 1px solid #bae6fd;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 2rem;
+        animation: fadeInUp 0.6s ease-out 0.5s backwards;
+    }
+
+    .review-status-text {
+        font-size: 0.875rem;
+        color: #0369a1;
+        margin: 0;
+        font-weight: 500;
+    }
+
+    .action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        animation: fadeInUp 0.6s ease-out 0.6s backwards;
+    }
+
+    .btn-primary-custom {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        font-size: 0.875rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.2s ease;
+    }
+
+    .btn-primary-custom:hover {
+        background-color: var(--primary-dark);
+        color: white;
+        text-decoration: none;
+        transform: translateY(-1px);
+    }
+
+    .btn-secondary-custom {
+        background-color: transparent;
+        color: var(--text-muted);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        font-size: 0.875rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.2s ease;
+    }
+
+    .btn-secondary-custom:hover {
+        background-color: var(--background-light);
+        color: var(--text-color);
+        text-decoration: none;
+        border-color: var(--primary-color);
+    }
+
+    .divider {
+        height: 1px;
+        background-color: var(--border-color);
+        margin: 1.5rem 0;
+        animation: fadeInUp 0.6s ease-out 0.7s backwards;
+    }
+
+    .footer-text {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin-top: 1rem;
+        animation: fadeInUp 0.6s ease-out 0.8s backwards;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes scaleIn {
+        from {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .review-success-container {
+            padding: 1rem;
+        }
+
+        .success-card {
+            padding: 2rem;
+        }
+
+        .success-title {
+            font-size: 1.5rem;
+        }
+
+        .success-message {
+            font-size: 0.875rem;
+        }
+    }
+
+    @media (min-width: 640px) {
+        .action-buttons {
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        .btn-primary-custom,
+        .btn-secondary-custom {
+            flex: 0 0 auto;
+            min-width: 140px;
+        }
+    }
+
+    /* Remove animations for users who prefer reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+</style>
+
+<div class="review-success-container">
+    <div class="success-card">
+        <!-- Success Icon -->
+        <div class="success-icon">
+            <i class="fas fa-check"></i>
+        </div>
+
+        <!-- Success Message -->
+        <h1 class="success-title">Review Submitted Successfully</h1>
+
+        <p class="success-message">
+            Thank you for taking the time to share your feedback. Your review has been published and will help other
+            customers make informed decisions.
+        </p>
+
+        <!-- Review Status -->
+        <div class="review-status">
+            <p class="review-status-text">
+                <i class="fas fa-info-circle me-2"></i>
+                Your review is now live and visible to other customers
+            </p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a href="{% url 'home' %}" class="btn-primary-custom">
+                <i class="fas fa-home"></i>
+                Back to Home
+            </a>
+            <a href="{% url 'orders' %}" class="btn-secondary-custom">
+                <i class="fas fa-receipt"></i>
+                View Orders
+            </a>
+        </div>
+
+        <!-- Divider -->
+        <div class="divider"></div>
+
+        <!-- Footer Text -->
+        <p class="footer-text">
+            Need help? <a href="{% url 'contact' %}" style="color: var(--primary-color); text-decoration: none;">Contact
+                our support team</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

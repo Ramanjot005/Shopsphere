@@ -1,0 +1,678 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Home - ShopSphere{% endblock %}
+
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+    <style>
+
+
+:root {
+    /* Color Palette */
+    --primary: #FF6B9D;
+    --primary-dark: #E55A8A;
+    --primary-light: #FFE6EF;
+    --secondary: #9D4EDD;
+    --accent: #FFF0F5;
+    --dark: #1A1A1A;
+    --text: #2C3E50;
+    --text-light: #6C757D;
+    --white: #FFFFFF;
+    
+    /* Enhanced Gray Scale */
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e1;
+    
+    /* Professional Gradients */
+    --gradient-primary: linear-gradient(135deg, #FF6B9D 0%, #9D4EDD 100%);
+    --gradient-secondary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-tertiary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --gradient-ambient: linear-gradient(45deg, rgba(255, 107, 157, 0.1) 0%, rgba(157, 78, 221, 0.08) 50%, rgba(102, 126, 234, 0.06) 100%);
+}
+
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: var(--gray-50);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+    position: relative;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(ellipse at 20% 30%, rgba(255, 107, 157, 0.18) 0%, rgba(255, 107, 157, 0.08) 40%, transparent 70%),
+        radial-gradient(ellipse at 80% 70%, rgba(157, 78, 221, 0.15) 0%, rgba(157, 78, 221, 0.07) 40%, transparent 70%),
+        radial-gradient(ellipse at 50% 50%, rgba(102, 126, 234, 0.12) 0%, rgba(102, 126, 234, 0.05) 50%, transparent 80%),
+        linear-gradient(135deg, rgba(255, 107, 157, 0.06) 0%, rgba(157, 78, 221, 0.04) 50%, rgba(102, 126, 234, 0.03) 100%);
+    animation: floatWaves 15s ease-in-out infinite alternate;
+    z-index: -10;
+    will-change: transform;
+}
+
+
+
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        /* Subtle dots pattern */
+        url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23FF6B9D' fill-opacity='0.08'%3E%3Ccircle cx='50' cy='50' r='2'/%3E%3Ccircle cx='25' cy='25' r='1'/%3E%3Ccircle cx='75' cy='75' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"),
+        /* Geometric shapes */
+        url("data:image/svg+xml,%3Csvg width='150' height='150' viewBox='0 0 150 150' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg stroke='%239D4EDD' stroke-opacity='0.06' stroke-width='1'%3E%3Cpolygon points='75,15 105,60 75,105 45,60'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"),
+        /* Mesh overlay */
+        url("data:image/svg+xml,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg stroke='%23667eea' stroke-opacity='0.04' stroke-width='0.5'%3E%3Cpath d='M0 100h200M100 0v200'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background-repeat: repeat;
+    z-index: -9;
+    opacity: 1;
+    animation: patternShift 25s linear infinite;
+}
+
+
+.page-container {
+    position: relative;
+    z-index: 1;
+}
+
+.page-container::before {
+    content: '';
+    position: fixed;
+    width: 200px;
+    height: 200px;
+    background: var(--gradient-primary);
+    opacity: 0.06;
+    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    top: 15%;
+    left: 8%;
+    animation: morphFloat 30s ease-in-out infinite;
+    z-index: -8;
+    will-change: transform;
+}
+
+.page-container::after {
+    content: '';
+    position: fixed;
+    width: 180px;
+    height: 180px;
+    background: var(--gradient-secondary);
+    opacity: 0.05;
+    border-radius: 50% 20% 80% 40% / 60% 30% 70% 40%;
+    top: 60%;
+    right: 12%;
+    animation: morphFloat 35s ease-in-out infinite reverse;
+    animation-delay: -15s;
+    z-index: -8;
+    will-change: transform;
+}
+
+/* Additional floating element using main container */
+.main-content {
+    position: relative;
+}
+
+.main-content::before {
+    content: '';
+    position: fixed;
+    width: 160px;
+    height: 160px;
+    background: var(--gradient-tertiary);
+    opacity: 0.04;
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    top: 75%;
+    left: 25%;
+    animation: pulseFloat 20s ease-in-out infinite alternate;
+    z-index: -8;
+    will-change: transform;
+}
+
+
+@keyframes floatWaves {
+    0% { 
+        transform: translateY(0px) translateX(0px) scale(1) rotate(0deg);
+        opacity: 0.9;
+    }
+    25% { 
+        transform: translateY(-30px) translateX(15px) scale(1.05) rotate(2deg);
+        opacity: 1;
+    }
+    50% { 
+        transform: translateY(-50px) translateX(0px) scale(1.1) rotate(0deg);
+        opacity: 1.1;
+    }
+    75% { 
+        transform: translateY(-30px) translateX(-15px) scale(1.05) rotate(-2deg);
+        opacity: 1;
+    }
+    100% { 
+        transform: translateY(0px) translateX(0px) scale(1) rotate(0deg);
+        opacity: 0.9;
+    }
+}
+
+@keyframes patternShift {
+    0% { 
+        transform: translateX(0) translateY(0) scale(1);
+    }
+    25% { 
+        transform: translateX(30px) translateY(15px) scale(1.02);
+    }
+    50% { 
+        transform: translateX(0) translateY(30px) scale(1.05);
+    }
+    75% { 
+        transform: translateX(-30px) translateY(15px) scale(1.02);
+    }
+    100% { 
+        transform: translateX(0) translateY(0) scale(1);
+    }
+}
+
+@keyframes morphFloat {
+    0% { 
+        transform: rotate(0deg) scale(1) translate(0, 0);
+        border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    }
+    25% { 
+        transform: rotate(90deg) scale(1.1) translate(10px, -10px);
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    }
+    50% { 
+        transform: rotate(180deg) scale(0.9) translate(0, -20px);
+        border-radius: 70% 30% 30% 70% / 40% 60% 40% 60%;
+    }
+    75% { 
+        transform: rotate(270deg) scale(1.05) translate(-10px, -10px);
+        border-radius: 40% 60% 60% 40% / 70% 30% 30% 70%;
+    }
+    100% { 
+        transform: rotate(360deg) scale(1) translate(0, 0);
+        border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    }
+}
+
+@keyframes pulseFloat {
+    0% { 
+        transform: scale(1) rotate(0deg);
+        opacity: 0.04;
+    }
+    50% { 
+        transform: scale(1.3) rotate(180deg);
+        opacity: 0.08;
+    }
+    100% { 
+        transform: scale(1) rotate(360deg);
+        opacity: 0.04;
+    }
+}
+
+/* Original fadeInUp animation preserved */
+@keyframes fadeInUp {
+    from { 
+        opacity: 0; 
+        transform: translateY(30px);
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0);
+    }
+}
+
+
+.fade-in-up {
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.animation-delay-1 { animation-delay: 0.2s; }
+.animation-delay-2 { animation-delay: 0.4s; }
+.animation-delay-3 { animation-delay: 0.6s; }
+
+
+@media (max-width: 768px) {
+    body::before {
+        background: 
+            radial-gradient(ellipse at 25% 35%, rgba(255, 107, 157, 0.08) 0%, transparent 60%),
+            radial-gradient(ellipse at 75% 65%, rgba(157, 78, 221, 0.06) 0%, transparent 60%),
+            linear-gradient(135deg, rgba(255, 107, 157, 0.02) 0%, rgba(157, 78, 221, 0.01) 100%);
+        animation-duration: 20s;
+    }
+    
+    .page-container::before,
+    .page-container::after,
+    .main-content::before {
+        width: 120px;
+        height: 120px;
+        opacity: 0.03;
+    }
+}
+
+@media (max-width: 480px) {
+    body::before {
+        animation-duration: 15s;
+    }
+    
+    body::after {
+        opacity: 0.4;
+    }
+    
+    .page-container::before,
+    .page-container::after,
+    .main-content::before {
+        display: none;
+    }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+@media (prefers-contrast: high) {
+    body::before,
+    body::after {
+        opacity: 0.3;
+    }
+    
+    .page-container::before,
+    .page-container::after,
+    .main-content::before {
+        opacity: 0.02;
+    }
+}
+    </style>
+{% endblock %}
+{% block content %}
+
+<div class="container mt-4">
+    <!-- Enhanced Main Banner -->
+    <section class="beautiful-banner mb-5">
+        <div class="banner-content">
+            <div class="row align-items-center">
+                <div class="col-lg-6 banner-text-col">
+                    <h1 class="banner-title">Discover Your Style</h1>
+                    <p class="banner-subtitle">Explore our curated collection of premium products designed for modern
+                        living.</p>
+                    <div class="banner-buttons">
+                        <a href="#" class="btn btn-primary btn-lg banner-btn">Shop Now</a>
+                        <a href="#" class="btn btn-outline-primary btn-lg banner-btn ms-3">New Arrivals</a>
+                    </div>
+                </div>
+                <div class="col-lg-6 banner-image-col">
+                    <img src="https://placeholder.pics/svg/600x400/FFF0F5-FFE6EF/FF6B9D/PREMIUM%20SHOPPING"
+                        alt="Premium Shopping" class="img-fluid banner-image">
+                    <div class="banner-shape-1"></div>
+                    <div class="banner-shape-2"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enhanced Carousel Banner Section -->
+    <section class="banner-section">
+        <div id="mainCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="0" class="active"
+                    aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="https://placeholder.pics/svg/1200x300/FFF0F5-FFE6EF/FF6B9D/SUMMER%20COLLECTION%202025"
+                        class="d-block w-100" alt="Summer Collection">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h3>Summer Collection 2025</h3>
+                        <p>Discover the latest trends for the season</p>
+                        <a href="#" class="btn btn-light btn-banner-action">Shop Now</a>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="https://placeholder.pics/svg/1200x300/F0E6FF-E6F0FF/9D4EDD/EXCLUSIVE%20DEALS"
+                        class="d-block w-100" alt="Exclusive Deals">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h3>Exclusive Deals</h3>
+                        <p>Limited time offers on premium products</p>
+                        <a href="#" class="btn btn-light btn-banner-action">View Deals</a>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="https://placeholder.pics/svg/1200x300/FFF0F5-FFE6EF/FF6B9D/FREE%20SHIPPING%20ON%20ORDERS%20OVER%20$50"
+                        class="d-block w-100" alt="Free Shipping">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h3>Free Shipping</h3>
+                        <p>On all orders over $50</p>
+                        <a href="#" class="btn btn-light btn-banner-action">Learn More</a>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- Featured Categories Section -->
+    <section class="category-section">
+        <h3 class="category-title">Shop by Category</h3>
+        <div class="row">
+            {% for cat in categories %}
+            <div class="col-6 col-md-3 col-lg-2 mb-4">
+                <a href="{% url 'category_products' cat.name %}" class="text-decoration-none">
+                    <div class="category-card">
+                        <div class="category-icon">
+                            {% if cat.name == 'Electronics' %}
+                            <i class="fas fa-laptop-code"></i>
+                            {% elif cat.name == 'Clothing' %}
+                            <i class="fas fa-tshirt"></i>
+                            {% elif cat.name == 'Books' %}
+                            <i class="fas fa-book-open"></i>
+                            {% elif cat.name == 'Home' %}
+                            <i class="fas fa-home"></i>
+                            {% elif cat.name == 'Beauty' %}
+                            <i class="fas fa-spa"></i>
+                            {% elif cat.name == 'Jewelry' %}
+                            <i class="fas fa-gem"></i>
+                            {% elif cat.name == 'Sports' %}
+                            <i class="fas fa-running"></i>
+                            {% elif cat.name == 'Toys' %}
+                            <i class="fas fa-gamepad"></i>
+                            {% elif cat.name == 'Food' %}
+                            <i class="fas fa-utensils"></i>
+                            {% elif cat.name == 'Health' %}
+                            <i class="fas fa-heartbeat"></i>
+                            {% else %}
+                            <i class="fas fa-shopping-bag"></i>
+                            {% endif %}
+                        </div>
+                        <div class="category-name">{{ cat.name }}</div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 mb-4">
+            <div class="sidebar-custom">
+                <h5>Categories</h5>
+                <div class="list-group">
+                    <a href="{% url 'home' %}"
+                        class="list-group-item list-group-item-action {% if not selected_category %}active{% endif %}">
+                        <i class="fas fa-th-large me-2"></i> All Products
+                    </a>
+                    {% for cat in categories %}
+                    <a href="{% url 'category_products' cat.name %}"
+                        class="list-group-item list-group-item-action {% if selected_category == cat.name %}active{% endif %}">
+                        {% if cat.name == 'Electronics' %}
+                        <i class="fas fa-laptop-code me-2"></i>
+                        {% elif cat.name == 'Clothing' %}
+                        <i class="fas fa-tshirt me-2"></i>
+                        {% elif cat.name == 'Books' %}
+                        <i class="fas fa-book-open me-2"></i>
+                        {% elif cat.name == 'Home' %}
+                        <i class="fas fa-home me-2"></i>
+                        {% elif cat.name == 'Beauty' %}
+                        <i class="fas fa-spa me-2"></i>
+                        {% elif cat.name == 'Jewelry' %}
+                        <i class="fas fa-gem me-2"></i>
+                        {% elif cat.name == 'Sports' %}
+                        <i class="fas fa-running me-2"></i>
+                        {% elif cat.name == 'Toys' %}
+                        <i class="fas fa-gamepad me-2"></i>
+                        {% elif cat.name == 'Food' %}
+                        <i class="fas fa-utensils me-2"></i>
+                        {% elif cat.name == 'Health' %}
+                        <i class="fas fa-heartbeat me-2"></i>
+                        {% else %}
+                        <i class="fas fa-tag me-2"></i>
+                        {% endif %}
+                        {{ cat.name }}
+                    </a>
+                    {% endfor %}
+                </div>
+
+               
+
+                <!-- Discount Filter -->
+                <h5 class="mt-4">Discount</h5>
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="discount1">
+                        <label class="form-check-label" for="discount1">
+                            50% or more
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="discount2">
+                        <label class="form-check-label" for="discount2">
+                            30% or more
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="discount3">
+                        <label class="form-check-label" for="discount3">
+                            10% or more
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products -->
+        <div class="col-md-9 col-lg-10">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4>{% if selected_category %}{{ selected_category }}{% else %}All Products{% endif %}</h4>
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-sort me-1"></i> Sort By
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                        <li><a class="dropdown-item" href="#">Popularity</a></li>
+                        <li><a class="dropdown-item" href="#">Price: Low to High</a></li>
+                        <li><a class="dropdown-item" href="#">Price: High to Low</a></li>
+                        <li><a class="dropdown-item" href="#">Newest First</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="row">
+                {% for product in products %}
+                <div class="col-6 col-md-4 col-lg-3 mb-4">
+                    <div class="card product-card">
+                        {% if forloop.counter|divisibleby:3 %}
+                        <span class="badge-discount">-20%</span>
+                        {% endif %}
+                        {% if forloop.counter|divisibleby:5 %}
+                        <span class="badge-new">NEW</span>
+                        {% endif %}
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.title }}">
+                        {% else %}
+                        <img src="https://placeholder.pics/svg/300x300/DEDEDE-DEDEDE/777777/Product%20Image"
+                            class="card-img-top" alt="{{ product.title }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="{% url 'product_detail' product.id %}" class="text-decoration-none text-dark">
+                                    {{ product.title }}
+                                </a>
+                            </h5>
+                            <p class="card-text">{{ product.description }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="price">₹{{ product.price }}</div>
+                                {% if forloop.counter|divisibleby:3 %}
+                                <div class="text-decoration-line-through text-muted">₹{{ product.price|add:200 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="mt-2 mb-2">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-2">
+                                        <i class="fas fa-star text-warning"></i>
+                                        <i class="fas fa-star text-warning"></i>
+                                        <i class="fas fa-star text-warning"></i>
+                                        <i class="fas fa-star text-warning"></i>
+                                        <i class="fas fa-star-half-alt text-warning"></i>
+                                    </div>
+                                    <small class="text-muted">({{ forloop.counter|add:10 }})</small>
+                                </div>
+                            </div>
+                            <div class="product-buttons">
+                                <a href="{% url 'add_to_cart' product.id %}" class="btn btn-add-cart">
+                                    <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                                </a>
+                                <div class="action-buttons mt-2">
+                                    <a href="{% url 'product_detail' product.id %}" class="btn btn-product-details">
+                                        <i class="fas fa-info-circle me-1"></i> Details
+                                    </a>
+                                    <a href="{% url 'add_to_wishlist' product.id %}" class="btn btn-wishlist">
+                                        <i class="fas fa-heart me-1"></i> Wishlist
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            <nav aria-label="Page navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Featured Products Section -->
+    <section class="mt-5">
+        <h3 class="category-title">Trending Products</h3>
+        <div class="row">
+            {% for product in products|slice:":4" %}
+            <div class="col-6 col-md-3 mb-4">
+                <div class="card product-card">
+                    <span class="badge-discount">HOT</span>
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.title }}">
+                    {% else %}
+                    <img src="https://placeholder.pics/svg/300x300/DEDEDE-DEDEDE/777777/Product%20Image"
+                        class="card-img-top" alt="{{ product.title }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <a href="{% url 'product_detail' product.id %}" class="text-decoration-none text-dark">
+                                {{ product.title }}
+                            </a>
+                        </h5>
+                        <p class="card-text">{{ product.description }}</p>
+                        <div class="price">₹{{ product.price }}</div>
+                        <div class="mt-2 mb-2">
+                            <div class="d-flex align-items-center">
+                                <div class="me-2">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                </div>
+                                <small class="text-muted">({{ forloop.counter|add:50 }})</small>
+                            </div>
+                        </div>
+                        <div class="product-buttons">
+                            <a href="{% url 'add_to_cart' product.id %}" class="btn btn-add-cart">
+                                <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                            </a>
+                            <div class="action-buttons mt-2">
+                                <a href="{% url 'product_detail' product.id %}" class="btn btn-product-details">
+                                    <i class="fas fa-info-circle me-1"></i> Details
+                                </a>
+                                <a href="{% url 'add_to_wishlist' product.id %}" class="btn btn-wishlist">
+                                    <i class="fas fa-heart me-1"></i> Wishlist
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Enhanced Promotional Banner -->
+    <section class="mt-5 mb-5">
+        <div class="promo-banner">
+            <div class="promo-content">
+                <div class="row align-items-center">
+                    <div class="col-md-7">
+                        <h2 class="promo-title">Download Our Mobile App</h2>
+                        <p class="promo-text">Get exclusive deals, faster checkout, and personalized recommendations.
+                        </p>
+                        <div class="app-buttons">
+                            <a href="#" class="btn btn-app"><i class="fab fa-google-play me-2"></i>Google Play</a>
+                            <a href="#" class="btn btn-app ms-2"><i class="fab fa-apple me-2"></i>App Store</a>
+                        </div>
+                    </div>
+                    <div class="col-md-5 text-center">
+                        <img src="https://placeholder.pics/svg/300x300/FFFFFF-FFFFFF/FF6B9D/MOBILE%20APP"
+                            alt="Mobile App" class="img-fluid promo-image">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<div class="card text-center my-4">
+    <div class="card-body">
+        <h5 class="card-title">We value your feedback!</h5>
+        <p class="card-text">Tell us what you think about ShopSphere.</p>
+        <a href="{% url 'submit_review' %}" class="btn btn-primary">Write a Review</a>
+    </div>
+</div>
+  
+{% endblock %}

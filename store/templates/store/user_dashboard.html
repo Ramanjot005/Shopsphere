@@ -1,0 +1,1443 @@
+{% extends 'store/base.html' %}
+{% block title %}User Dashboard | ShopSphere{% endblock %}
+
+{% block content %}
+<!-- User Dashboard Header -->
+<section class="dashboard-header">
+    <div class="container py-4">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="user-profile-card">
+                    <div class="user-avatar">
+                        <span>{{ user.username.0|upper }}</span>
+                        <div class="avatar-ring"></div>
+                    </div>
+                    <div class="user-info">
+                        <h3 class="fw-bold mb-1">Welcome, {{ user.username }}</h3>
+                        <p class="text-muted mb-0">{{ user.email }}</p>
+                        <div class="user-status">
+                            <span class="status-indicator"></span>
+                            <small>Active Member</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="header-decoration">
+        <div class="decoration-circle circle-1"></div>
+        <div class="decoration-circle circle-2"></div>
+        <div class="decoration-circle circle-3"></div>
+    </div>
+</section>
+
+<!-- Dashboard Statistics -->
+<section class="dashboard-stats">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-md-3">
+                        <div class="stat-card" data-aos="fade-up" data-aos-delay="100">
+                            <div class="stat-icon-wrapper">
+                                <div class="stat-icon">📊</div>
+                                <div class="icon-bg"></div>
+                            </div>
+                            <div class="stat-number" data-count="{{ total_orders|default:0 }}">0</div>
+                            <div class="stat-label">Total Orders</div>
+                            <div class="stat-progress">
+                                <div class="progress-bar" style="width: 75%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-card" data-aos="fade-up" data-aos-delay="200">
+                            <div class="stat-icon-wrapper">
+                                <div class="stat-icon">⏳</div>
+                                <div class="icon-bg"></div>
+                            </div>
+                            <div class="stat-number" data-count="{{ pending_orders|default:0 }}">0</div>
+                            <div class="stat-label">Pending</div>
+                            <div class="stat-progress">
+                                <div class="progress-bar" style="width: 45%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-card" data-aos="fade-up" data-aos-delay="300">
+                            <div class="stat-icon-wrapper">
+                                <div class="stat-icon">❤️</div>
+                                <div class="icon-bg"></div>
+                            </div>
+                            <div class="stat-number" data-count="{{ wishlist_count|default:0 }}">0</div>
+                            <div class="stat-label">Wishlist</div>
+                            <div class="stat-progress">
+                                <div class="progress-bar" style="width: 60%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-card" data-aos="fade-up" data-aos-delay="400">
+                            <div class="stat-icon-wrapper">
+                                <div class="stat-icon">⭐</div>
+                                <div class="icon-bg"></div>
+                            </div>
+                            <div class="stat-number" data-count="0">0</div>
+                            <div class="stat-label">Reviews</div>
+                            <div class="stat-progress">
+                                <div class="progress-bar" style="width: 30%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Dashboard Content -->
+<section class="dashboard-content">
+    <div class="container pb-5">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <!-- Quick Actions -->
+                <div class="dashboard-section" data-aos="fade-up" data-aos-delay="100">
+                    <h5 class="section-title">
+                        <i class="fas fa-bolt"></i>
+                        Quick Actions
+                    </h5>
+                    <div class="row g-3">
+                        <div class="col-6 col-md-3">
+                            <a href="{% url 'home' %}" class="action-card">
+                                <div class="action-icon-wrapper">
+                                    <div class="action-icon">🏠</div>
+                                    <div class="action-ripple"></div>
+                                </div>
+                                <span>Shop Now</span>
+                                <div class="card-glow"></div>
+                            </a>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <a href="{% url 'update_profile' %}" class="action-card">
+                                <div class="action-icon-wrapper">
+                                    <div class="action-icon">✏️</div>
+                                    <div class="action-ripple"></div>
+                                </div>
+                                <span>Edit Profile</span>
+                                <div class="card-glow"></div>
+                            </a>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <a href="{% url 'orders' %}" class="action-card">
+                                <div class="action-icon-wrapper">
+                                    <div class="action-icon">🛒</div>
+                                    <div class="action-ripple"></div>
+                                </div>
+                                <span>My Orders</span>
+                                <div class="card-glow"></div>
+                            </a>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <a href="{% url 'wishlist' %}" class="action-card">
+                                <div class="action-icon-wrapper">
+                                    <div class="action-icon">❤️</div>
+                                    <div class="action-ripple"></div>
+                                </div>
+                                <span>Wishlist</span>
+                                <div class="card-glow"></div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Orders -->
+                <div class="dashboard-section" data-aos="fade-up" data-aos-delay="200">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="section-title mb-0">
+                            <i class="fas fa-clock"></i>
+                            Recent Orders
+                        </h5>
+                        <a href="{% url 'orders' %}" class="view-all">
+                            View All
+                            <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                    <div class="card border-0 shadow-sm recent-orders-card">
+                        <div class="card-body p-0">
+                            {% if recent_orders %}
+                            {% for order in recent_orders %}
+                            <div class="order-item" data-aos="fade-left"
+                                data-aos-delay="{{ forloop.counter0|add:100 }}">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="order-info">
+                                        <div class="order-header">
+                                            <h6 class="mb-1">Order #{{ order.id }}</h6>
+                                            <div class="order-pulse"></div>
+                                        </div>
+                                        <p class="text-muted mb-0 small">{{ order.created_at|date:"M d, Y" }}</p>
+                                    </div>
+                                    <div class="order-status">
+                                        <span class="badge status-{{ order.approval_status|lower }} animated-badge">
+                                            {{ order.approval_status }}
+                                        </span>
+                                        <div class="order-total">${{ order.total_price }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            {% else %}
+                            <div class="empty-state">
+                                <div class="empty-icon">📦</div>
+                                <h6>No orders yet</h6>
+                                <p class="text-muted">Your order history will appear here</p>
+                                <a href="{% url 'home' %}" class="btn btn-pink">
+                                    <i class="fas fa-shopping-bag me-2"></i>
+                                    Start Shopping
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Wishlist Preview -->
+                <div class="dashboard-section" data-aos="fade-up" data-aos-delay="300">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="section-title mb-0">
+                            <i class="fas fa-heart"></i>
+                            Wishlist
+                        </h5>
+                        <a href="{% url 'wishlist' %}" class="view-all">
+                            View All
+                            <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                    <div class="card border-0 shadow-sm wishlist-card">
+                        <div class="card-body p-0">
+                            <div class="empty-state">
+                                <div class="empty-icon">❤️</div>
+                                <h6>Save your favorites</h6>
+                                <p class="text-muted">Save items you like for later</p>
+                                <a href="{% url 'home' %}" class="btn btn-pink">
+                                    <i class="fas fa-search me-2"></i>
+                                    Explore Products
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account Settings -->
+                <div class="dashboard-section" data-aos="fade-up" data-aos-delay="400">
+                    <h5 class="section-title">
+                        <i class="fas fa-cog"></i>
+                        Account Settings
+                    </h5>
+                    <div class="card border-0 shadow-sm account-settings-card">
+                        <div class="list-group list-group-flush">
+                            <a href="{% url 'profile' %}" class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="setting-info">
+                                        <div class="setting-icon">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1">Personal Information</h6>
+                                            <p class="text-muted mb-0 small">Update your personal details</p>
+                                        </div>
+                                    </div>
+                                    <span class="chevron">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </div>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="setting-info">
+                                        <div class="setting-icon">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1">Address Book</h6>
+                                            <p class="text-muted mb-0 small">Manage your delivery addresses</p>
+                                        </div>
+                                    </div>
+                                    <span class="chevron">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </div>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="setting-info">
+                                        <div class="setting-icon">
+                                            <i class="fas fa-credit-card"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1">Payment Methods</h6>
+                                            <p class="text-muted mb-0 small">Add or remove payment options</p>
+                                        </div>
+                                    </div>
+                                    <span class="chevron">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </div>
+                            </a>
+                            <a href="{% url 'logout' %}" class="list-group-item list-group-item-action logout-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="setting-info">
+                                        <div class="setting-icon logout-icon">
+                                            <i class="fas fa-sign-out-alt"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1 text-danger">Logout</h6>
+                                            <p class="text-muted mb-0 small">Sign out of your account</p>
+                                        </div>
+                                    </div>
+                                    <span class="chevron text-danger">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Import Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
+
+    /* CSS Variables */
+    :root {
+        --primary-color:  #ff85a2;
+        --primary-dark:white;
+        --secondary-color: #ec4899;
+        --secondary-dark: #db2777;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --info-color:  #ff85a2;
+        --light-pink: #fdf2f8;
+        --light-purple: #f8fafc;
+        --dark-text: #1e293b;
+        --medium-text: #475569;
+        --light-text: #64748b;
+        --lighter-text: #94a3b8;
+        --white: #ffffff;
+        --light-bg: #f8fafc;
+        --border-color: #e2e8f0;
+        --shadow-light: rgba(99, 102, 241, 0.1);
+        --shadow-medium: rgba(99, 102, 241, 0.15);
+        --shadow-heavy: rgba(99, 102, 241, 0.25);
+        --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        --gradient-secondary: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+        --border-radius: 16px;
+        --border-radius-lg: 24px;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-fast: all 0.2s ease;
+        --transition-slow: all 0.5s ease;
+    }
+
+    /* Global Styles */
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        color: var(--dark-text);
+        line-height: 1.6;
+        font-weight: 400;
+        overflow-x: hidden;
+    }
+
+    /* Smooth Scrolling */
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* Dashboard Header */
+    .dashboard-header {
+        background: var(--gradient-primary);
+        color: var(--white);
+        border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+        box-shadow: 0 20px 40px var(--shadow-heavy);
+        position: relative;
+        overflow: hidden;
+        animation: slideDown 1s cubic-bezier(0.4, 0, 0.2, 1);
+        min-height: 200px;
+        display: flex;
+        align-items: center;
+    }
+
+    .dashboard-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        pointer-events: none;
+        opacity: 0.3;
+    }
+
+    .header-decoration {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        overflow: hidden;
+    }
+
+    .decoration-circle {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        animation: float 6s ease-in-out infinite;
+    }
+
+    .circle-1 {
+        width: 100px;
+        height: 100px;
+        top: 20%;
+        right: 10%;
+        animation-delay: 0s;
+    }
+
+    .circle-2 {
+        width: 60px;
+        height: 60px;
+        top: 60%;
+        right: 20%;
+        animation-delay: 2s;
+    }
+
+    .circle-3 {
+        width: 80px;
+        height: 80px;
+        top: 40%;
+        left: 5%;
+        animation-delay: 4s;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-50px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes float {
+
+        0%,
+        100% {
+            transform: translateY(0) rotate(0deg);
+        }
+
+        50% {
+            transform: translateY(-20px) rotate(180deg);
+        }
+    }
+
+    .user-profile-card {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .user-avatar {
+        width: 100px;
+        height: 100px;
+        background: rgba(255, 255, 255, 0.15);
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--white);
+        backdrop-filter: blur(20px);
+        transition: var(--transition);
+        position: relative;
+        animation: fadeInScale 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s both;
+    }
+
+    .avatar-ring {
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        right: -5px;
+        bottom: -5px;
+        border: 2px solid transparent;
+        border-radius: 50%;
+        background: linear-gradient(45deg, rgba(255, 255, 255, 0.5), transparent, rgba(255, 255, 255, 0.5));
+        animation: rotate 3s linear infinite;
+        opacity: 0;
+        transition: var(--transition);
+    }
+
+    .user-avatar:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: scale(1.05);
+        box-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
+    }
+
+    .user-avatar:hover .avatar-ring {
+        opacity: 1;
+    }
+
+    @keyframes rotate {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    @keyframes fadeInScale {
+        from {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    .user-info {
+        flex: 1;
+    }
+
+    .user-info h3 {
+        font-weight: 700;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        animation: fadeInRight 1s cubic-bezier(0.4, 0, 0.2, 1) 0.5s both;
+    }
+
+    .user-info p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        font-weight: 400;
+        margin-bottom: 0.5rem;
+        animation: fadeInRight 1s cubic-bezier(0.4, 0, 0.2, 1) 0.7s both;
+    }
+
+    .user-status {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        animation: fadeInRight 1s cubic-bezier(0.4, 0, 0.2, 1) 0.9s both;
+    }
+
+    .status-indicator {
+        width: 8px;
+        height: 8px;
+        background: #10b981;
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+
+        0%,
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        50% {
+            opacity: 0.7;
+            transform: scale(1.2);
+        }
+    }
+
+    @keyframes fadeInRight {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    /* Dashboard Statistics */
+    .dashboard-stats {
+        margin-top: -40px;
+        margin-bottom: 3rem;
+        position: relative;
+        z-index: 3;
+    }
+
+    .stat-card {
+        background: var(--white);
+        border-radius: var(--border-radius);
+        padding: 2rem 1.5rem;
+        text-align: center;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        transition: var(--transition);
+        border: 1px solid var(--border-color);
+        position: relative;
+        overflow: hidden;
+        animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--gradient-primary);
+        transform: scaleX(0);
+        transition: var(--transition);
+    }
+
+    .stat-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-12px);
+        box-shadow: 0 20px 40px var(--shadow-medium);
+        border-color: var(--primary-color);
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .stat-icon-wrapper {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 1rem;
+    }
+
+    .stat-icon {
+        font-size: 3rem;
+        transition: var(--transition);
+        position: relative;
+        z-index: 2;
+    }
+
+    .icon-bg {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80px;
+        height: 80px;
+        background: var(--gradient-primary);
+        border-radius: 50%;
+        opacity: 0.1;
+        transition: var(--transition);
+    }
+
+    .stat-card:hover .stat-icon {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    .stat-card:hover .icon-bg {
+        opacity: 0.2;
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+        transition: var(--transition);
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: var(--light-text);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 1rem;
+    }
+
+    .stat-progress {
+        height: 4px;
+        background: var(--light-bg);
+        border-radius: 2px;
+        overflow: hidden;
+        margin-top: 1rem;
+    }
+
+    .progress-bar {
+        height: 100%;
+        background: var(--gradient-primary);
+        border-radius: 2px;
+        transition: width 1s ease-in-out;
+        animation: progressFill 2s ease-in-out;
+    }
+
+    @keyframes progressFill {
+        from {
+            width: 0;
+        }
+    }
+
+    /* Dashboard Content */
+    .dashboard-content {
+        padding-top: 2rem;
+    }
+
+    .dashboard-section {
+        margin-bottom: 3rem;
+        animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+
+    .section-title {
+        font-weight: 700;
+        font-size: 1.4rem;
+        color: var(--dark-text);
+        margin-bottom: 1.5rem;
+        position: relative;
+        padding-left: 3rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .section-title i {
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 40px;
+        height: 40px;
+        background: var(--gradient-primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
+        font-size: 1rem;
+        box-shadow: 0 4px 15px var(--shadow-light);
+    }
+
+    /* Action Cards */
+    .action-card {
+        background: var(--white);
+        border-radius: var(--border-radius);
+        padding: 2rem 1rem;
+        text-align: center;
+        text-decoration: none;
+        color: var(--dark-text);
+        display: block;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        transition: var(--transition);
+        border: 1px solid var(--border-color);
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+    }
+
+    .card-glow {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--gradient-primary);
+        opacity: 0;
+        transition: var(--transition);
+        border-radius: var(--border-radius);
+    }
+
+    .action-card:hover .card-glow {
+        opacity: 0.05;
+    }
+
+    .action-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 20px 40px var(--shadow-medium);
+        color: var(--primary-color);
+        border-color: var(--primary-color);
+        text-decoration: none;
+    }
+
+    .action-icon-wrapper {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 1rem;
+    }
+
+    .action-icon {
+        font-size: 3rem;
+        transition: var(--transition);
+        position: relative;
+        z-index: 2;
+    }
+
+    .action-ripple {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 0;
+        height: 0;
+        background: var(--gradient-primary);
+        border-radius: 50%;
+        opacity: 0.2;
+        transition: var(--transition);
+    }
+
+    .action-card:hover .action-icon {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    .action-card:hover .action-ripple {
+        width: 100px;
+        height: 100px;
+    }
+
+    .action-card span {
+        font-weight: 600;
+        font-size: 1rem;
+        transition: var(--transition);
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Cards */
+    .card.shadow-sm {
+        border-radius: var(--border-radius) !important;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08) !important;
+        transition: var(--transition);
+        overflow: hidden;
+    }
+
+    .card.shadow-sm:hover {
+        box-shadow: 0 15px 40px var(--shadow-light) !important;
+        transform: translateY(-4px);
+    }
+
+    /* Order Items */
+    .order-item {
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid var(--border-color);
+        transition: var(--transition);
+        position: relative;
+    }
+
+    .order-item:last-child {
+        border-bottom: none;
+    }
+
+    .order-item:hover {
+        background: linear-gradient(135deg, var(--light-pink), var(--light-purple));
+        transform: translateX(5px);
+    }
+
+    .order-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        position: relative;
+    }
+
+    .order-pulse {
+        width: 8px;
+        height: 8px;
+        background: var(--primary-color);
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+    }
+
+    .order-info h6 {
+        font-weight: 700;
+        color: var(--dark-text);
+        margin-bottom: 0.25rem;
+        font-size: 1.1rem;
+    }
+
+    .order-status {
+        text-align: right;
+    }
+
+    .order-total {
+        font-weight: 800;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 1.25rem;
+        margin-top: 0.5rem;
+    }
+
+    /* Status Badges */
+    .badge {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .animated-badge {
+        animation: badgeGlow 2s ease-in-out infinite;
+    }
+
+    @keyframes badgeGlow {
+
+        0%,
+        100% {
+            box-shadow: 0 0 5px currentColor;
+        }
+
+        50% {
+            box-shadow: 0 0 15px currentColor;
+        }
+    }
+
+    .status-pending {
+        background: linear-gradient(135deg, var(--warning-color), #fbbf24);
+        color: var(--white);
+    }
+
+    .status-approved {
+        background: linear-gradient(135deg, var(--success-color), #34d399);
+        color: var(--white);
+    }
+
+    .status-rejected {
+        background: linear-gradient(135deg, var(--danger-color), #f87171);
+        color: var(--white);
+    }
+
+    .status-processing {
+        background: linear-gradient(135deg, var(--info-color), #60a5fa);
+        color: var(--white);
+    }
+
+    /* Empty State */
+    .empty-state {
+        padding: 4rem 2rem;
+        text-align: center;
+        color: var(--light-text);
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 1.5rem;
+        opacity: 0.7;
+        animation: float 4s ease-in-out infinite;
+    }
+
+    .empty-state h6 {
+        font-weight: 700;
+        color: var(--dark-text);
+        margin-bottom: 0.75rem;
+        font-size: 1.25rem;
+    }
+
+    .empty-state p {
+        margin-bottom: 2rem;
+        font-size: 1rem;
+        color: var(--medium-text);
+    }
+
+    /* Buttons */
+    .btn-pink {
+        background: var(--gradient-primary);
+        border: none;
+        color: var(--white);
+        font-weight: 600;
+        padding: 1rem 2rem;
+        border-radius: 30px;
+        transition: var(--transition);
+        box-shadow: 0 8px 25px var(--shadow-light);
+        position: relative;
+        overflow: hidden;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.9rem;
+    }
+
+    .btn-pink::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .btn-pink:hover::before {
+        left: 100%;
+    }
+
+    .btn-pink:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px var(--shadow-medium);
+        color: var(--white);
+    }
+
+    /* View All Link */
+    .view-all {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: var(--transition);
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .view-all i {
+        transition: var(--transition);
+    }
+
+    .view-all:hover {
+        color: var(--primary-dark);
+        text-decoration: none;
+        transform: translateX(3px);
+    }
+
+    .view-all:hover i {
+        transform: translateX(5px);
+    }
+
+    /* Account Settings */
+    .account-settings-card .list-group-item {
+        border: none;
+        padding: 1.5rem 2rem;
+        border-radius: var(--border-radius) !important;
+        margin-bottom: 0.75rem;
+        transition: var(--transition);
+        background: var(--white);
+        border: 1px solid var(--border-color) !important;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .account-settings-card .list-group-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--gradient-primary);
+        transform: scaleY(0);
+        transition: var(--transition);
+    }
+
+    .account-settings-card .list-group-item:hover::before {
+        transform: scaleY(1);
+    }
+
+    .account-settings-card .list-group-item:hover {
+        background: var(--light-pink);
+        border-color: var(--primary-color) !important;
+        transform: translateX(8px);
+        box-shadow: 0 8px 25px var(--shadow-light);
+    }
+
+    .setting-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .setting-icon {
+        width: 50px;
+        height: 50px;
+        background: var(--gradient-primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
+        font-size: 1.1rem;
+        transition: var(--transition);
+    }
+
+    .account-settings-card .list-group-item:hover .setting-icon {
+        transform: scale(1.1) rotate(5deg);
+        box-shadow: 0 4px 15px var(--shadow-medium);
+    }
+
+    .account-settings-card .list-group-item h6 {
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+        transition: var(--transition);
+        font-size: 1.1rem;
+    }
+
+    .account-settings-card .list-group-item:hover h6 {
+        color: var(--primary-color);
+    }
+
+    .account-settings-card .list-group-item p {
+        font-size: 0.9rem;
+        margin-bottom: 0;
+        color: var(--medium-text);
+    }
+
+    .chevron {
+        font-size: 1.2rem;
+        color: var(--light-text);
+        transition: var(--transition);
+    }
+
+    .account-settings-card .list-group-item:hover .chevron {
+        color: var(--primary-color);
+        transform: translateX(5px);
+    }
+
+    .logout-item:hover {
+        background: #fef2f2 !important;
+        border-color: var(--danger-color) !important;
+    }
+
+    .logout-item:hover .setting-icon {
+        background: linear-gradient(135deg, var(--danger-color), #f87171);
+    }
+
+    .logout-item:hover h6 {
+        color: var(--danger-color) !important;
+    }
+
+    .logout-item:hover .chevron {
+        color: var(--danger-color) !important;
+    }
+
+    .logout-icon {
+        background: linear-gradient(135deg, var(--danger-color), #f87171) !important;
+    }
+
+    /* Counter Animation */
+    @keyframes countUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .dashboard-header {
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            min-height: 180px;
+        }
+
+        .user-profile-card {
+            flex-direction: column;
+            text-align: center;
+            gap: 1.5rem;
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            font-size: 2rem;
+        }
+
+        .user-info h3 {
+            font-size: 1.75rem;
+        }
+
+        .dashboard-stats {
+            margin-top: -30px;
+        }
+
+        .stat-card {
+            padding: 1.5rem 1rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+        }
+
+        .action-card {
+            padding: 1.5rem 1rem;
+        }
+
+        .action-icon {
+            font-size: 2.5rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            padding-left: 2.5rem;
+        }
+
+        .section-title i {
+            width: 35px;
+            height: 35px;
+            font-size: 0.9rem;
+        }
+
+        .empty-state {
+            padding: 3rem 1.5rem;
+        }
+
+        .empty-icon {
+            font-size: 3.5rem;
+        }
+
+        .order-item {
+            padding: 1.25rem 1.5rem;
+        }
+
+        .account-settings-card .list-group-item {
+            padding: 1.25rem 1.5rem;
+        }
+
+        .setting-icon {
+            width: 45px;
+            height: 45px;
+            font-size: 1rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .dashboard-header {
+            padding: 1.5rem 0;
+            min-height: 160px;
+        }
+
+        .user-avatar {
+            width: 70px;
+            height: 70px;
+            font-size: 1.75rem;
+        }
+
+        .user-info h3 {
+            font-size: 1.5rem;
+        }
+
+        .stat-card {
+            padding: 1.25rem 0.75rem;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+        }
+
+        .stat-number {
+            font-size: 1.75rem;
+        }
+
+        .action-card {
+            padding: 1.25rem 0.75rem;
+        }
+
+        .action-icon {
+            font-size: 2.25rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            padding-left: 2rem;
+        }
+
+        .section-title i {
+            width: 30px;
+            height: 30px;
+            font-size: 0.8rem;
+        }
+
+        .account-settings-card .list-group-item {
+            padding: 1rem 1.25rem;
+        }
+
+        .setting-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 0.9rem;
+        }
+
+        .btn-pink {
+            padding: 0.875rem 1.5rem;
+            font-size: 0.85rem;
+        }
+    }
+
+    /* Loading Animation */
+    @keyframes shimmer {
+        0% {
+            background-position: -200px 0;
+        }
+
+        100% {
+            background-position: calc(200px + 100%) 0;
+        }
+    }
+
+    /* Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+
+    /* Focus States */
+    .action-card:focus,
+    .btn-pink:focus,
+    .view-all:focus,
+    .list-group-item:focus {
+        outline: 2px solid var(--primary-color);
+        outline-offset: 2px;
+    }
+
+    /* Print Styles */
+    @media print {
+        .dashboard-header {
+            background: var(--white) !important;
+            color: var(--dark-text) !important;
+            box-shadow: none !important;
+        }
+
+        .stat-card,
+        .card {
+            box-shadow: none !important;
+            border: 1px solid var(--border-color) !important;
+        }
+    }
+</style>
+
+<!-- Add AOS (Animate On Scroll) Library -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+<script>
+    // Initialize AOS
+    AOS.init({
+        duration: 800,
+        easing: 'ease-out-cubic',
+        once: true,
+        offset: 100
+    });
+
+    // Counter Animation
+    function animateCounters() {
+        const counters = document.querySelectorAll('.stat-number[data-count]');
+
+        counters.forEach(counter => {
+            const target = parseInt(counter.getAttribute('data-count'));
+            const duration = 2000;
+            const step = target / (duration / 16);
+            let current = 0;
+
+            const timer = setInterval(() => {
+                current += step;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                counter.textContent = Math.floor(current);
+            }, 16);
+        });
+    }
+
+    // Trigger counter animation when stats section is visible
+    const statsSection = document.querySelector('.dashboard-stats');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateCounters();
+                observer.unobserve(entry.target);
+            }
+        });
+    });
+
+    if (statsSection) {
+        observer.observe(statsSection);
+    }
+
+    // Add ripple effect to action cards
+    document.querySelectorAll('.action-card').forEach(card => {
+        card.addEventListener('click', function (e) {
+            const ripple = this.querySelector('.action-ripple');
+            ripple.style.width = '100px';
+            ripple.style.height = '100px';
+
+            setTimeout(() => {
+                ripple.style.width = '0';
+                ripple.style.height = '0';
+            }, 300);
+        });
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Add loading states
+    window.addEventListener('load', function () {
+        document.body.classList.add('loaded');
+    });
+</script>
+{% endblock %}

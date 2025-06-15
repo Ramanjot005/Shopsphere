@@ -1,0 +1,514 @@
+{% extends 'store/base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<!-- Main Header Section -->
+<div class="main-header">
+    <div class="container">
+        <h1 class="main-title text-center">
+            <i class="fas fa-cogs me-3"></i>Admin Dashboard
+        </h1>
+        <p class="text-center text-white-50 fs-5 mb-0">Complete control center for your store</p>
+    </div>
+</div>
+
+<div class="container py-4">
+    <!-- Welcome Alert -->
+    <div class="welcome-alert">
+        <div class="d-flex align-items-center">
+            <div class="welcome-icon me-3">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <div>
+                <h5 class="mb-1 fw-bold">Welcome back, {{ user.username }}!</h5>
+                <p class="mb-0 text-muted">You have administrative privileges to manage the entire store.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Grid -->
+    <div class="row g-4 mb-5">
+        <!-- Products Card -->
+        <div class="col-lg-3 col-md-6">
+            <div class="dashboard-card products-card">
+                <div class="card-body">
+                    <div class="card-icon text-primary">
+                        <i class="fas fa-box-open"></i>
+                    </div>
+                    <h5 class="card-title">Products</h5>
+                    <p class="card-text">Add, update, or remove store products and manage inventory.</p>
+                    <div class="card-stats">
+                        <span class="badge bg-primary-subtle text-primary mb-3">Inventory Control</span>
+                    </div>
+                    <a href="/admin/store/product/" class="btn btn-primary btn-action">
+                        <i class="fas fa-edit me-2"></i>Manage Products
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Categories Card -->
+        <div class="col-lg-3 col-md-6">
+            <div class="dashboard-card categories-card">
+                <div class="card-body">
+                    <div class="card-icon text-success">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <h5 class="card-title">Categories</h5>
+                    <p class="card-text">Organize products under categories for better navigation.</p>
+                    <div class="card-stats">
+                        <span class="badge bg-success-subtle text-success mb-3">Organization</span>
+                    </div>
+                    <a href="/admin/store/category/" class="btn btn-success btn-action">
+                        <i class="fas fa-folder-open me-2"></i>Manage Categories
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Card -->
+        <div class="col-lg-3 col-md-6">
+            <div class="dashboard-card users-card">
+                <div class="card-body">
+                    <div class="card-icon text-info">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h5 class="card-title">Users</h5>
+                    <p class="card-text">View and manage user accounts and permissions.</p>
+                    <div class="card-stats">
+                        <span class="badge bg-info-subtle text-info mb-3">User Management</span>
+                    </div>
+                    <a href="/admin/auth/user/" class="btn btn-info btn-action">
+                        <i class="fas fa-user-cog me-2"></i>Manage Users
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders Card -->
+        <div class="col-lg-3 col-md-6">
+            <div class="dashboard-card orders-card">
+                <div class="card-body">
+                    <div class="card-icon text-warning">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <h5 class="card-title">Orders</h5>
+                    <p class="card-text">Review and process customer orders and transactions.</p>
+                    <div class="card-stats">
+                        <span class="badge bg-warning-subtle text-warning mb-3">Order Processing</span>
+                    </div>
+                    <a href="{% url 'admin:store_order_changelist' %}" class="btn btn-warning btn-action">
+                        <i class="fas fa-clipboard-list me-2"></i>View Orders
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="quick-actions-card">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">
+                        <i class="fas fa-bolt me-2 text-primary"></i>Quick Actions
+                    </h5>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <a href="/admin/store/product/add/" class="quick-action-btn">
+                                <i class="fas fa-plus-circle"></i>
+                                <span>Add Product</span>
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="/admin/store/category/add/" class="quick-action-btn">
+                                <i class="fas fa-folder-plus"></i>
+                                <span>Add Category</span>
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="/admin/auth/user/add/" class="quick-action-btn">
+                                <i class="fas fa-user-plus"></i>
+                                <span>Add User</span>
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="/admin/" class="quick-action-btn">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>Admin Panel</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="text-center">
+        <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-lg back-btn">
+            <i class="fas fa-arrow-left me-2"></i>Back to Shop
+        </a>
+    </div>
+</div>
+
+<!-- Professional Styling -->
+<style>
+    :root {
+        --primary-gradient: linear-gradient(135deg,  #ff85a2 0%, #764ba2 100%);
+        --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        --info-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --warning-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        --card-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        --card-shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.15);
+        --border-radius: 16px;
+        --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Main Header */
+    .main-header {
+        background: var(--primary-gradient);
+        padding: 3rem 0;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .main-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        animation: shimmer 3s infinite;
+    }
+
+    @keyframes shimmer {
+        0% {
+            left: -100%;
+        }
+
+        100% {
+            left: 100%;
+        }
+    }
+
+    .main-title {
+        color: white;
+        font-weight: 700;
+        font-size: 2.5rem;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        animation: fadeInUp 1s ease-out;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Welcome Alert */
+    .welcome-alert {
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        border: none;
+        border-radius: var(--border-radius);
+        box-shadow: var(--card-shadow);
+        padding: 1.5rem;
+        margin-bottom: 3rem;
+        animation: slideInDown 0.8s ease-out 0.2s both;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .welcome-alert::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--primary-gradient);
+    }
+
+    .welcome-icon {
+        width: 50px;
+        height: 50px;
+        background: var(--primary-gradient);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+    }
+
+    @keyframes slideInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-50px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Dashboard Cards */
+    .dashboard-card {
+        background: white;
+        border: none;
+        border-radius: var(--border-radius);
+        box-shadow: var(--card-shadow);
+        transition: var(--transition);
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+        animation: fadeInScale 0.6s ease-out both;
+    }
+
+    .dashboard-card:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+
+    .dashboard-card:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .dashboard-card:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+
+    .dashboard-card:nth-child(4) {
+        animation-delay: 0.4s;
+    }
+
+    @keyframes fadeInScale {
+        from {
+            opacity: 0;
+            transform: scale(0.95) translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+
+    .dashboard-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--primary-gradient);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
+    .products-card::before {
+        background: linear-gradient(90deg, #007bff, #0056b3);
+    }
+
+    .categories-card::before {
+        background: linear-gradient(90deg, #28a745, #1e7e34);
+    }
+
+    .users-card::before {
+        background: linear-gradient(90deg, #17a2b8, #117a8b);
+    }
+
+    .orders-card::before {
+        background: linear-gradient(90deg, #ffc107, #e0a800);
+    }
+
+    .dashboard-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: var(--card-shadow-hover);
+    }
+
+    .card-body {
+        padding: 2rem;
+        text-align: center;
+    }
+
+    /* Card Icons */
+    .card-icon {
+        font-size: 3.5rem;
+        margin-bottom: 1.5rem;
+        transition: var(--transition);
+        display: block;
+    }
+
+    .dashboard-card:hover .card-icon {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    /* Card Titles and Text */
+    .card-title {
+        font-weight: 600;
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+        color: #2c3e50;
+    }
+
+    .card-text {
+        color: #6c757d;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Action Buttons */
+    .btn-action {
+        border-radius: 50px;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-action::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.2);
+        transition: left 0.5s ease;
+    }
+
+    .btn-action:hover::before {
+        left: 100%;
+    }
+
+    .btn-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Quick Actions */
+    .quick-actions-card {
+        background: white;
+        border: none;
+        border-radius: var(--border-radius);
+        box-shadow: var(--card-shadow);
+        animation: fadeIn 1s ease-out 0.5s both;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    .quick-action-btn {
+        display: block;
+        padding: 1.5rem;
+        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        border: 2px solid #e9ecef;
+        border-radius: var(--border-radius);
+        text-decoration: none;
+        color: #495057;
+        text-align: center;
+        transition: var(--transition);
+        font-weight: 600;
+    }
+
+    .quick-action-btn:hover {
+        transform: translateY(-5px);
+        border-color:  #ff85a2;
+        color:  #ff85a2 ;
+        box-shadow: 0 8px 20px rgba(0, 123, 255, 0.15);
+        text-decoration: none;
+    }
+
+    .quick-action-btn i {
+        display: block;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        transition: var(--transition);
+    }
+
+    .quick-action-btn:hover i {
+        transform: scale(1.2);
+    }
+
+    /* Back Button */
+    .back-btn {
+        border-radius: 50px;
+        padding: 1rem 2rem;
+        font-weight: 600;
+        transition: var(--transition);
+        animation: fadeInUp 1s ease-out 0.8s both;
+    }
+
+    .back-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .main-title {
+            font-size: 2rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+        }
+
+        .quick-action-btn {
+            padding: 1rem;
+        }
+
+        .quick-action-btn i {
+            font-size: 1.5rem;
+        }
+    }
+
+    /* Loading Animation */
+    .dashboard-card {
+        opacity: 0;
+        animation: slideInUp 0.6s ease-out forwards;
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %}

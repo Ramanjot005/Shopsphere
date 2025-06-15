@@ -1,0 +1,580 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}My Orders | ShopSphere{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="orders-header mb-4">
+        <div class="d-flex align-items-center justify-content-center mb-3">
+            <a href="{% url 'home' %}" class="back-link me-3">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <h2 class="orders-title mb-0">My Orders</h2>
+        </div>
+        <p class="orders-subtitle">Track and manage your purchase history</p>
+    </div>
+
+    {% if orders %}
+    <div class="row g-4">
+        {% for order in orders %}
+        <div class="col-lg-6 col-xl-4">
+            <div class="order-card">
+                <!-- Order Header -->
+                <div class="order-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="order-info">
+                            <h6 class="order-id">Order #{{ order.id }}</h6>
+                            <span class="order-date">{{ order.created_at|date:"M d, Y" }}</span>
+                        </div>
+                        <div class="order-status-container">
+                            <span class="badge order-status-badge 
+                                {% if order.approval_status == 'Approved' %}status-approved
+                                {% elif order.approval_status == 'Rejected' %}status-rejected
+                                {% else %}status-pending{% endif %}">
+                                {{ order.approval_status }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Items -->
+                <div class="order-items">
+                    {% for item in order.items.all|slice:":2" %}
+                    <div class="order-item">
+                        <div class="row align-items-center">
+                            <div class="col-3">
+                                <div class="item-image">
+                                    {% if item.product.image %}
+                                    <img src="{{ item.product.image.url }}" alt="{{ item.product.title }}"
+                                        class="order-item-img">
+                                    {% else %}
+                                    <div class="placeholder-image">
+                                        <i class="fas fa-image"></i>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-9">
+                                <h6 class="item-title">{{ item.product.title|truncatechars:25 }}</h6>
+                                <div class="item-details">
+                                    <span class="item-price">${{ item.price }}</span>
+                                    <span class="item-quantity">x {{ item.quantity }}</span>
+                                </div>
+                                <div class="item-subtotal">${{ item.subtotal }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    {% if order.items.count > 2 %}
+                    <div class="more-items">
+                        <span class="more-items-text">+{{ order.items.count|add:"-2" }} more item{{
+                            order.items.count|add:"-2"|pluralize }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Order Footer -->
+                <div class="order-footer">
+                    <div class="order-total">
+                        <span class="total-label">Total:</span>
+                        <span class="total-amount">${{ order.total_price }}</span>
+                    </div>
+
+                    <div class="order-actions">
+                        <a href="{% url 'order_detail' order.id %}" class="btn btn-view-details">
+                            <i class="fas fa-eye me-2"></i> View Details
+                        </a>
+
+                        <div class="action-buttons">
+                            {% if order.status == 'Delivered' %}
+                            <button class="btn-order-action rate-btn" title="Rate Order">
+                                <i class="fas fa-star"></i>
+                            </button>
+                            {% endif %}
+
+                            <button class="btn-order-action reorder-btn" title="Reorder">
+                                <i class="fas fa-redo"></i>
+                            </button>
+
+                            {% if order.order_number %}
+                            <a href="{% url 'track_order' order.order_number %}" class="btn-order-action track-btn"
+                                title="Track Order">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </a>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <!-- Empty State -->
+    <div class="empty-orders">
+        <div class="empty-orders-icon">
+            <i class="fas fa-shopping-bag"></i>
+        </div>
+        <h3>No orders yet</h3>
+        <p>You haven't placed any orders yet. Start shopping to see your orders here.</p>
+        <a href="{% url 'home' %}" class="btn btn-start-shopping">
+            <i class="fas fa-shopping-cart me-2"></i> Start Shopping
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    /* Orders Page Styling - Matching Wishlist Design */
+    .orders-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .orders-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .orders-subtitle {
+        color: var(--dark-gray);
+        font-size: 1.1rem;
+    }
+
+    .back-link {
+        color: var(--primary-color);
+        font-size: 1.5rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .back-link:hover {
+        color: var(--primary-dark);
+        transform: translateX(-5px);
+    }
+
+    .order-card {
+        background-color: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 20px rgba(255, 107, 157, 0.1);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        height: 100%;
+        position: relative;
+    }
+
+    .order-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 30px rgba(255, 107, 157, 0.2);
+    }
+
+    .order-header {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 1.5rem;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .order-id {
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 0.25rem;
+        font-size: 1.1rem;
+    }
+
+    .order-date {
+        color: var(--dark-gray);
+        font-size: 0.9rem;
+    }
+
+    .order-status-badge {
+        border-radius: 50px;
+        padding: 0.5rem 1rem;
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-approved {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+    }
+
+    .status-rejected {
+        background: linear-gradient(135deg, #dc3545, #fd7e14);
+        color: white;
+    }
+
+    .status-pending {
+        background: linear-gradient(135deg, #ffc107, #fd7e14);
+        color: white;
+    }
+
+    .order-items {
+        padding: 1.5rem;
+        max-height: 200px;
+        overflow: hidden;
+    }
+
+    .order-item {
+        margin-bottom: 1rem;
+    }
+
+    .order-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .item-image {
+        width: 100%;
+        height: 60px;
+        border-radius: 8px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .order-item-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: all 0.3s ease;
+    }
+
+    .order-card:hover .order-item-img {
+        transform: scale(1.1);
+    }
+
+    .placeholder-image {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #e9ecef, #dee2e6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--dark-gray);
+        font-size: 1.2rem;
+    }
+
+    .item-title {
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 0.25rem;
+        font-size: 0.95rem;
+    }
+
+    .item-details {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.25rem;
+    }
+
+    .item-price {
+        color: var(--primary-color);
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+
+    .item-quantity {
+        color: var(--dark-gray);
+        font-size: 0.85rem;
+    }
+
+    .item-subtotal {
+        font-weight: 700;
+        color: var(--primary-color);
+        font-size: 0.9rem;
+    }
+
+    .more-items {
+        text-align: center;
+        padding: 0.75rem;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 8px;
+        margin-top: 1rem;
+    }
+
+    .more-items-text {
+        color: var(--dark-gray);
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .order-footer {
+        padding: 1.5rem;
+        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        border-top: 1px solid #dee2e6;
+    }
+
+    .order-total {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .total-label {
+        color: var(--dark-gray);
+        font-weight: 600;
+    }
+
+    .total-amount {
+        font-weight: 700;
+        color: var(--primary-color);
+        font-size: 1.2rem;
+    }
+
+    .order-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .btn-view-details {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 12px 0;
+        font-weight: 600;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
+        text-decoration: none;
+        text-align: center;
+        display: block;
+    }
+
+    .btn-view-details:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 15px rgba(255, 107, 157, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-view-details::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: all 0.6s;
+    }
+
+    .btn-view-details:hover::before {
+        left: 100%;
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .btn-order-action {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        text-decoration: none;
+    }
+
+    .rate-btn {
+        background: linear-gradient(135deg, #ffc107, #ff8c00);
+    }
+
+    .reorder-btn {
+        background: linear-gradient(135deg, #28a745, #20c997);
+    }
+
+    .track-btn {
+        background: linear-gradient(135deg, #17a2b8, #007bff);
+    }
+
+    .delete-btn {
+        background: linear-gradient(135deg, #dc3545, #c82333);
+    }
+
+    .btn-order-action:hover {
+        transform: scale(1.15) translateY(-2px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Empty Orders */
+    .empty-orders {
+        text-align: center;
+        padding: 4rem 2rem;
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(255, 107, 157, 0.1);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .empty-orders-icon {
+        font-size: 4rem;
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+        animation: pulse 2s infinite;
+    }
+
+    .empty-orders h3 {
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 1rem;
+    }
+
+    .empty-orders p {
+        color: var(--dark-gray);
+        margin-bottom: 2rem;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .btn-start-shopping {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 12px 30px;
+        font-weight: 600;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        text-decoration: none;
+    }
+
+    .btn-start-shopping:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(255, 107, 157, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+
+    /* Pulse Animation */
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.05);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .orders-title {
+            font-size: 2rem;
+        }
+
+        .order-card {
+            margin-bottom: 1.5rem;
+        }
+
+        .item-image {
+            height: 50px;
+        }
+
+        .action-buttons {
+            gap: 8px;
+        }
+
+        .btn-order-action {
+            width: 40px;
+            height: 40px;
+            font-size: 0.9rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .orders-title {
+            font-size: 1.8rem;
+        }
+
+        .order-header,
+        .order-items,
+        .order-footer {
+            padding: 1rem;
+        }
+
+        .empty-orders {
+            padding: 3rem 1.5rem;
+        }
+
+        .empty-orders-icon {
+            font-size: 3rem;
+        }
+
+        .action-buttons {
+            gap: 6px;
+        }
+
+        .btn-order-action {
+            width: 38px;
+            height: 38px;
+            font-size: 0.85rem;
+        }
+    }
+
+    /* Card Animation on Load */
+    .order-card {
+        animation: fadeInUp 0.6s ease-out forwards;
+    }
+
+    .order-card:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+
+    .order-card:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .order-card:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+
+    .order-card:nth-child(4) {
+        animation-delay: 0.4s;
+    }
+
+    .order-card:nth-child(5) {
+        animation-delay: 0.5s;
+    }
+
+    .order-card:nth-child(6) {
+        animation-delay: 0.6s;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %}

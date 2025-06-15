@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Sign Up | ShopSphere</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body,
+        html {
+            height: 100%;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(-45deg, #fce4ec, #f8bbd0, #e1bee7, #ede7f6);
+            background-size: 400% 400%;
+            animation: gradientFlow 15s ease infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        @keyframes gradientFlow {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .container {
+            background: white;
+            padding: 3rem 3.5rem;
+            border-radius: 20px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: relative;
+        }
+
+        h2 {
+            color: #9c27b0;
+            font-weight: 700;
+            font-size: 2.2rem;
+            margin-bottom: 0.3rem;
+        }
+
+        p.subheader {
+            color: #7c5295;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin: 1rem 0 0.5rem 0;
+            text-align: left;
+            color: #333;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            background-color: #fafafa;
+            font-size: 1rem;
+            transition: border-color 0.3s, background-color 0.3s, box-shadow 0.3s;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #ba68c8;
+            background-color: white;
+            box-shadow: 0 0 0 4px rgba(186, 104, 200, 0.2);
+            outline: none;
+        }
+
+        button {
+            margin-top: 2rem;
+            width: 100%;
+            padding: 0.9rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(45deg, #ba68c8, #ec407a);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: pulseBtn 2.5s infinite;
+        }
+
+        button:hover {
+            background: linear-gradient(45deg, #ec407a, #ba68c8);
+            transform: translateY(-2px);
+        }
+
+        @keyframes pulseBtn {
+            0% {
+                box-shadow: 0 0 0 0 rgba(236, 64, 122, 0.5);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(236, 64, 122, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(236, 64, 122, 0);
+            }
+        }
+
+        /* Celebration message container */
+        .celebration {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .celebration.show {
+            display: flex;
+        }
+
+        .confetti {
+            font-size: 3.5rem;
+            animation: confettiFloat 3s ease-in-out infinite;
+        }
+
+        .confetti.second {
+            animation-delay: 1.5s;
+        }
+
+        h1.greeting {
+            color: #9c27b0;
+            font-size: 2.4rem;
+            margin: 1rem 0 0.5rem 0;
+        }
+
+        p.greeting-text {
+            color: #7c5295;
+            font-size: 1.1rem;
+        }
+
+        @keyframes confettiFloat {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-15px) rotate(15deg);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <form id="signupForm" method="POST" action="">
+            {% csrf_token %}
+                    <h2>Create Account</h2>
+            <p class="subheader">Join ShopSphere and start shopping</p>
+
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Choose a username" required />
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required />
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Create a password" required />
+
+            <label for="role">Register as</label>
+            <select id="role" name="role" required>
+                <option value="">-- Select Role --</option>
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+            </select>
+
+            <button type="submit">Create Account</button>
+            <a href="{% url 'login' %}" class="btn btn-success">Go to Login</a>
+
+        </form>
+
+        <div class="celebration" id="celebration">
+            
+            <h1 class="greeting" id="greeting"></h1>
+            <p class="greeting-text">Welcome to ShopSphere! Let's start shopping 🎈</p>
+        </div>
+
+    </div>
+
+    <script>
+        const form = document.getElementById('signupForm');
+        const celebration = document.getElementById('celebration');
+        const greeting = document.getElementById('greeting');
+
+      
+    </script>
+    
+</body>
+
+</html>

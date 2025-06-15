@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Order Tracking - {{ order.order_number }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* styling as before */
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-tracking">
+    <h2>Order Tracking</h2>
+    <p><strong>Order Number:</strong> {{ order.order_number }}</p>
+
+    <div class="current-status">
+        Current Status: {{ order.status }}
+    </div>
+
+    <h3>Status History</h3>
+    <ul class="status-timeline">
+        {% for update in status_updates %}
+        <li>
+            <div class="status-date">{{ update.timestamp|date:"M d, Y - H:i" }}</div>
+            <div class="status-text">{{ update.status }}</div>
+            {% if update.comment %}
+            <div class="status-comment">{{ update.comment }}</div>
+            {% endif %}
+        </li>
+        {% empty %}
+        <li>No status updates yet.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

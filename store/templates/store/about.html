@@ -1,0 +1,431 @@
+{% extends 'store/base.html' %}
+{% block title %}About Us{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --primary-color: #ff85a2;
+        --primary-dark: #e26a8d;
+        --accent-color: #a673ff;
+        --accent-dark: #8e52e2;
+        --light-gray: #f2f2f2;
+        --text-color: #212529;
+        --secondary-color: #fff9fb;
+    }
+
+    .about-hero {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+        color: white;
+        padding: 5rem 1rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 4rem;
+    }
+
+    .about-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        pointer-events: none;
+        opacity: 0.3;
+    }
+
+    .about-hero h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        animation: fadeInUp 0.8s ease-out;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .about-hero .lead {
+        font-size: 1.4rem;
+        margin-bottom: 0;
+        animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        opacity: 0.95;
+    }
+
+    .floating-shapes {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .shape {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        animation: float 8s ease-in-out infinite;
+    }
+
+    .shape:nth-child(1) {
+        width: 300px;
+        height: 300px;
+        top: -100px;
+        right: -100px;
+        animation-delay: 0s;
+    }
+
+    .shape:nth-child(2) {
+        width: 200px;
+        height: 200px;
+        bottom: -50px;
+        left: -50px;
+        animation-delay: 4s;
+    }
+
+    .shape:nth-child(3) {
+        width: 150px;
+        height: 150px;
+        top: 50%;
+        left: 10%;
+        animation-delay: 2s;
+    }
+
+    .about-section {
+        padding: 2rem 0 5rem;
+    }
+
+    .about-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 40px rgba(255, 133, 162, 0.08);
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+        border: 1px solid rgba(255, 133, 162, 0.1);
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+        animation: slideInUp 0.8s ease-out;
+    }
+
+    .about-card:nth-child(1) {
+        animation-delay: 0.2s;
+    }
+
+    .about-card:nth-child(2) {
+        animation-delay: 0.4s;
+    }
+
+    .about-card:nth-child(3) {
+        animation-delay: 0.6s;
+    }
+
+    .about-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
+    .about-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .about-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 25px 60px rgba(255, 133, 162, 0.15);
+    }
+
+    .about-card h4 {
+        color: var(--primary-color);
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .about-card h4 i {
+        font-size: 1.8rem;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+        -webkit-text-fill-color: transparent;
+        animation: pulse 2s infinite;
+    }
+
+    .about-card p {
+        color: #4b5563;
+        font-size: 1.1rem;
+        line-height: 1.8;
+        margin-bottom: 0;
+    }
+
+    .founder-note {
+        text-align: center;
+        font-style: italic;
+        font-size: 1.1rem;
+        color: #6b7280;
+        margin-top: 3rem;
+        padding: 2rem;
+        background: linear-gradient(135deg, #fff0f5 0%, #f3e5ff 100%);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 133, 162, 0.2);
+        animation: fadeInUp 0.8s ease-out 0.8s backwards;
+        position: relative;
+    }
+
+    .founder-note::before {
+        content: '❤️';
+        font-size: 2rem;
+        position: absolute;
+        top: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: white;
+        padding: 0 1rem;
+        animation: heartbeat 2s infinite;
+    }
+
+    .stats-section {
+        background: linear-gradient(135deg, #fff0f5 0%, #f3e5ff 100%);
+        padding: 3rem 0;
+        margin: 3rem 0;
+        border-radius: 30px;
+        animation: fadeInUp 0.8s ease-out 1s backwards;
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 1rem;
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--primary-color);
+        display: block;
+        animation: countUp 2s ease-out;
+    }
+
+    .stat-label {
+        font-size: 1rem;
+        color: #6b7280;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes float {
+
+        0%,
+        100% {
+            transform: translateY(0px) rotate(0deg);
+        }
+
+        50% {
+            transform: translateY(-20px) rotate(180deg);
+        }
+    }
+
+    @keyframes pulse {
+
+        0%,
+        100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.1);
+        }
+    }
+
+    @keyframes heartbeat {
+
+        0%,
+        100% {
+            transform: translateX(-50%) scale(1);
+        }
+
+        50% {
+            transform: translateX(-50%) scale(1.2);
+        }
+    }
+
+    @keyframes countUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .about-hero {
+            padding: 4rem 1rem;
+        }
+
+        .about-hero h1 {
+            font-size: 2.5rem;
+        }
+
+        .about-card {
+            padding: 2rem;
+        }
+
+        .about-card h4 {
+            font-size: 1.3rem;
+        }
+    }
+</style>
+
+<!-- Hero Banner -->
+<section class="about-hero">
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    <div class="container position-relative">
+        <h1><i class="fas fa-heart me-3"></i>About Me</h1>
+        <p class="lead">One person. One passion. A thousand stories to share.</p>
+    </div>
+</section>
+
+<!-- Main Content -->
+<section class="about-section">
+    <div class="container">
+        <!-- Stats Section -->
+        <div class="stats-section">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="stat-item">
+                        <span class="stat-number">1000+</span>
+                        <div class="stat-label">Happy Customers</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-item">
+                        <span class="stat-number">5000+</span>
+                        <div class="stat-label">Books Sold</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-item">
+                        <span class="stat-number">24/7</span>
+                        <div class="stat-label">Support</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="about-card">
+                    <h4><i class="fas fa-store"></i>Welcome to My Bookstore!</h4>
+                    <p>Hello! I'm the creator behind this online bookstore — a one-person project built from a love for
+                        books
+                        and technology. My goal is simple: to make discovering and buying books online a delightful,
+                        personal
+                        experience.</p>
+                </div>
+
+                <div class="about-card">
+                    <h4><i class="fas fa-lightbulb"></i>Why I Built This</h4>
+                    <p>As someone who's always been fascinated by storytelling and design, I wanted to build a platform
+                        where
+                        others could explore and enjoy books without the noise — clean, fast, and curated by someone who
+                        cares.
+                        Every feature, every detail here has been crafted by me, with love and long nights of coding.
+                    </p>
+                </div>
+
+                <div class="about-card">
+                    <h4><i class="fas fa-handshake"></i>Thank You</h4>
+                    <p>Thank you for visiting, exploring, and hopefully finding a book you'll love. Supporting this site
+                        means
+                        supporting an individual — not a company — and I'm truly grateful for every order and every
+                        message.</p>
+                </div>
+
+                <div class="founder-note">
+                    Made with passion by a solo developer who loves good code and great books.
+                    <br><strong>Every purchase supports independent development!</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Animate numbers when they come into view
+        const observerOptions = {
+            threshold: 0.5,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver(function (entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = entry.target;
+                    const finalNumber = target.textContent;
+                    animateNumber(target, finalNumber);
+                    observer.unobserve(target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.stat-number').forEach(stat => {
+            observer.observe(stat);
+        });
+
+        function animateNumber(element, finalNumber) {
+            const duration = 2000;
+            const increment = parseInt(finalNumber) / (duration / 16);
+            let current = 0;
+
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= parseInt(finalNumber)) {
+                    element.textContent = finalNumber;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current) + (finalNumber.includes('+') ? '+' : '');
+                }
+            }, 16);
+        }
+    });
+</script>
+{% endblock %}

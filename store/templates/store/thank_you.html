@@ -1,0 +1,633 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Order Placed | ShopSphere{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --primary-color: #ff85a2;
+        --primary-dark: #e26a8d;
+        --accent-color: #a673ff;
+        --accent-dark: #8e52e2;
+        --light-gray: #f2f2f2;
+        --text-color: #212529;
+        --secondary-color: #fff9fb;
+    }
+
+    body {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, #f8f9fa 100%);
+        min-height: 100vh;
+    }
+
+    .thank-you-container {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+        padding: 2rem 0;
+    }
+
+    .confetti-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .success-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 133, 162, 0.2);
+        border-radius: 30px;
+        padding: 3rem;
+        text-align: center;
+        box-shadow: 0 30px 80px rgba(255, 133, 162, 0.15);
+        max-width: 650px;
+        width: 100%;
+        margin: 0 1rem;
+        position: relative;
+        z-index: 10;
+        animation: successCardEntry 1s ease-out;
+        transition: all 0.3s ease;
+    }
+
+    .success-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 40px 100px rgba(255, 133, 162, 0.2);
+    }
+
+    .success-icon {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 2rem;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        animation: iconPulse 2s ease-out, iconGlow 3s ease-in-out infinite;
+        box-shadow: 0 0 30px rgba(255, 133, 162, 0.4);
+    }
+
+    .success-icon::before {
+        content: '';
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        right: -10px;
+        bottom: -10px;
+        border: 3px solid rgba(255, 133, 162, 0.3);
+        border-radius: 50%;
+        animation: ripple 2s infinite;
+    }
+
+    .success-icon i {
+        font-size: 3.5rem;
+        color: white;
+        animation: checkmarkDraw 0.8s ease-out 0.5s backwards;
+    }
+
+    .success-title {
+        font-size: 2.8rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+        -webkit-text-fill-color: transparent;
+        animation: titleSlideIn 0.8s ease-out 0.3s backwards;
+    }
+
+    .success-message {
+        font-size: 1.2rem;
+        color: #6b7280;
+        margin-bottom: 2.5rem;
+        line-height: 1.6;
+        animation: messageSlideIn 0.8s ease-out 0.5s backwards;
+    }
+
+    .success-message .brand-name {
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+        -webkit-text-fill-color: transparent;
+    }
+
+    .action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-top: 2rem;
+        animation: buttonsSlideIn 0.8s ease-out 0.7s backwards;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 1rem 2rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+    }
+
+    .btn-primary-custom::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .btn-primary-custom:hover::before {
+        left: 100%;
+    }
+
+    .btn-primary-custom:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(255, 133, 162, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-secondary-custom {
+        background: transparent;
+        color: var(--primary-color);
+        border: 2px solid var(--primary-color);
+        border-radius: 50px;
+        padding: 1rem 2rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+    }
+
+    .btn-secondary-custom:hover {
+        background: var(--primary-color);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(255, 133, 162, 0.2);
+        text-decoration: none;
+    }
+
+    .order-details {
+        background: linear-gradient(135deg, #fff0f5 0%, #f3e5ff 100%);
+        border-radius: 20px;
+        padding: 1.5rem;
+        margin: 2rem 0;
+        border: 1px solid rgba(255, 133, 162, 0.2);
+        animation: detailsSlideIn 0.8s ease-out 0.9s backwards;
+    }
+
+    .order-details h5 {
+        color: var(--primary-color);
+        font-weight: 700;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .order-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    .order-info:last-child {
+        margin-bottom: 0;
+        padding-top: 0.5rem;
+        border-top: 1px solid rgba(255, 133, 162, 0.2);
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    .floating-hearts {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .heart {
+        position: absolute;
+        color: rgba(255, 133, 162, 0.3);
+        font-size: 1.5rem;
+        animation: floatHeart 8s linear infinite;
+    }
+
+    .heart:nth-child(1) {
+        left: 10%;
+        animation-delay: 0s;
+    }
+
+    .heart:nth-child(2) {
+        left: 20%;
+        animation-delay: 2s;
+    }
+
+    .heart:nth-child(3) {
+        left: 30%;
+        animation-delay: 4s;
+    }
+
+    .heart:nth-child(4) {
+        left: 40%;
+        animation-delay: 6s;
+    }
+
+    .heart:nth-child(5) {
+        left: 50%;
+        animation-delay: 1s;
+    }
+
+    .heart:nth-child(6) {
+        left: 60%;
+        animation-delay: 3s;
+    }
+
+    .heart:nth-child(7) {
+        left: 70%;
+        animation-delay: 5s;
+    }
+
+    .heart:nth-child(8) {
+        left: 80%;
+        animation-delay: 7s;
+    }
+
+    .heart:nth-child(9) {
+        left: 90%;
+        animation-delay: 1.5s;
+    }
+
+    @keyframes successCardEntry {
+        from {
+            opacity: 0;
+            transform: translateY(50px) scale(0.9);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    @keyframes iconPulse {
+        0% {
+            transform: scale(0);
+            opacity: 0;
+        }
+
+        50% {
+            transform: scale(1.1);
+        }
+
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    @keyframes iconGlow {
+
+        0%,
+        100% {
+            box-shadow: 0 0 30px rgba(255, 133, 162, 0.4);
+        }
+
+        50% {
+            box-shadow: 0 0 50px rgba(255, 133, 162, 0.6);
+        }
+    }
+
+    @keyframes ripple {
+        0% {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        100% {
+            transform: scale(1.3);
+            opacity: 0;
+        }
+    }
+
+    @keyframes checkmarkDraw {
+        from {
+            transform: scale(0) rotate(-45deg);
+            opacity: 0;
+        }
+
+        to {
+            transform: scale(1) rotate(0deg);
+            opacity: 1;
+        }
+    }
+
+    @keyframes titleSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes messageSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes buttonsSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes detailsSlideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes floatHeart {
+        0% {
+            bottom: -50px;
+            transform: translateX(0) rotate(0deg);
+            opacity: 0;
+        }
+
+        10% {
+            opacity: 1;
+        }
+
+        90% {
+            opacity: 1;
+        }
+
+        100% {
+            bottom: 100vh;
+            transform: translateX(100px) rotate(360deg);
+            opacity: 0;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .success-card {
+            padding: 2rem;
+            margin: 0 1rem;
+        }
+
+        .success-title {
+            font-size: 2rem;
+        }
+
+        .success-message {
+            font-size: 1rem;
+        }
+
+        .action-buttons {
+            gap: 0.75rem;
+        }
+
+        .btn-primary-custom,
+        .btn-secondary-custom {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<div class="thank-you-container">
+    <!-- Confetti Canvas -->
+    <canvas id="confetti-canvas" class="confetti-canvas"></canvas>
+
+    <!-- Floating Hearts -->
+    <div class="floating-hearts">
+        <div class="heart">💖</div>
+        <div class="heart">💝</div>
+        <div class="heart">💕</div>
+        <div class="heart">💗</div>
+        <div class="heart">💖</div>
+        <div class="heart">💝</div>
+        <div class="heart">💕</div>
+        <div class="heart">💗</div>
+        <div class="heart">💖</div>
+    </div>
+
+    <!-- Success Card -->
+    <div class="success-card">
+        <!-- Success Icon -->
+        <div class="success-icon">
+            <i class="fas fa-check"></i>
+        </div>
+
+        <!-- Success Message -->
+        <h1 class="success-title">Order Confirmed!</h1>
+
+        <p class="success-message">
+            Thank you 💕for shopping with <span class="ShopSphere">ShopSphere</span>!
+            Your order has been successfully placed and is being processed.
+            We'll send you a confirmation email with tracking details shortly.
+        </p>
+
+        <!-- Order Details -->
+        <div class="order-details">
+            <h5><i class="fas fa-receipt me-2"></i>Order Summary</h5>
+            <div class="order-info">
+                <span>Order Number:</span>
+                <span class="fw-bold">#{{ order.id|default:"SP-2025-001" }}</span>
+            </div>
+            <div class="order-info">
+                <span>Estimated Delivery:</span>
+                <span class="fw-bold">3-5 Business Days</span>
+            </div>
+            {% for item in items %}
+            <div class="order-info">
+                <span>{{ item.title }} x {{ item.quantity }}</span>
+                <span>₹{{ item.subtotal|floatformat:0 }}</span>
+            </div>
+            {% endfor %}
+
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a href="{% url 'orders' %}" class="btn-primary-custom">
+                <i class="fas fa-receipt"></i>
+                View My Orders
+            </a>
+            <a href="{% url 'home' %}" class="btn-secondary-custom">
+                <i class="fas fa-shopping-bag"></i>
+                Continue Shopping
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Confetti Animation
+        function createConfetti() {
+            const duration = 4000;
+            const end = Date.now() + duration;
+
+            const colors = ['#ff85a2', '#a673ff', '#fbbf24', '#10b981', '#f472b6'];
+
+            (function frame() {
+                confetti({
+                    particleCount: 3,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: colors
+                });
+                confetti({
+                    particleCount: 3,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: colors
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        }
+
+        // Start confetti after a short delay
+        setTimeout(createConfetti, 500);
+
+        // Additional confetti burst on button hover
+        const buttons = document.querySelectorAll('.btn-primary-custom, .btn-secondary-custom');
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', function () {
+                confetti({
+                    particleCount: 20,
+                    spread: 30,
+                    origin: {
+                        x: 0.5,
+                        y: 0.8
+                    },
+                    colors: ['#ff85a2', '#a673ff']
+                });
+            });
+        });
+
+        // Success sound effect (optional)
+        function playSuccessSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+            oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
+            oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // G5
+
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        }
+
+        // Play success sound after animation
+        setTimeout(() => {
+            try {
+                playSuccessSound();
+            } catch (e) {
+                // Ignore audio errors
+            }
+        }, 1000);
+
+        // Add sparkle effect to success icon
+        const successIcon = document.querySelector('.success-icon');
+        setInterval(() => {
+            const sparkle = document.createElement('div');
+            sparkle.innerHTML = '✨';
+            sparkle.style.position = 'absolute';
+            sparkle.style.fontSize = '1rem';
+            sparkle.style.pointerEvents = 'none';
+            sparkle.style.animation = 'sparkle 1s ease-out forwards';
+            sparkle.style.left = Math.random() * 100 + '%';
+            sparkle.style.top = Math.random() * 100 + '%';
+
+            successIcon.appendChild(sparkle);
+
+            setTimeout(() => {
+                sparkle.remove();
+            }, 1000);
+        }, 2000);
+
+        // Add sparkle animation
+        const style = document.createElement('style');
+        style.textContent = `
+        @keyframes sparkle {
+            0% {
+                opacity: 0;
+                transform: scale(0) rotate(0deg);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1) rotate(180deg);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0) rotate(360deg);
+            }
+        }
+    `;
+        document.head.appendChild(style);
+    });
+</script>
+{% endblock %}

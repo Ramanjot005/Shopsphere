@@ -1,0 +1,2148 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ShopSphere{% endblock %}</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="{% static 'store/img/favicon.ico' %}" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff85a2;
+            --primary-dark: #e26a8d;
+            --accent-color: #a673ff;
+            --accent-dark: #8e52e2;
+            --light-gray: #f2f2f2;
+            --medium-gray: #d3d3d3;
+            --dark-gray: #555555;
+            --text-color: #212529;
+            --secondary-color: #fff9fb;
+            --sidebar-width: 320px;
+            --sidebar-overlay: rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            padding-top: 60px;
+        }
+
+        /* Sidebar Overlay - FIXED */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: var(--sidebar-overlay);
+            z-index: 1040;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .sidebar-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Side Navigation - FIXED */
+        .side-navigation {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            z-index: 1050;
+            transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            border-right: 1px solid var(--light-gray);
+        }
+
+        .side-navigation.show {
+            left: 0;
+        }
+
+        /* Sidebar Header */
+        .sidebar-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sidebar-brand i {
+            font-size: 1.75rem;
+            animation: bounce 2s infinite;
+        }
+
+        .sidebar-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 2;
+            cursor: pointer;
+        }
+
+        .sidebar-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        /* User Profile Section - UPDATED */
+        .sidebar-user-profile {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--light-gray);
+            background: linear-gradient(135deg, #fff0f5 0%, #f3e5ff 100%);
+        }
+
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid var(--primary-color);
+            box-shadow: 0 4px 12px rgba(255, 133, 162, 0.3);
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .user-avatar img:hover {
+            transform: scale(1.05);
+        }
+
+        .user-avatar-fallback {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .user-avatar::after {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            border: 2px solid var(--primary-color);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: ping 2s infinite;
+        }
+
+        .user-info h6 {
+            margin: 0;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .user-info p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+        }
+
+        /* Navigation Menu */
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+
+        .nav-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-section-title {
+            padding: 0.5rem 1.5rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--dark-gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-link-custom {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link-custom:hover {
+            background: linear-gradient(135deg, #fff0f5 0%, #f3e5ff 100%);
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
+            transform: translateX(5px);
+        }
+
+        .nav-link-custom.active {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            border-left-color: var(--accent-color);
+        }
+
+        .nav-link-custom i {
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link-custom:hover i {
+            transform: scale(1.1);
+        }
+
+        .nav-badge {
+            background: var(--primary-color);
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            margin-left: auto;
+            animation: pulse 2s infinite;
+        }
+
+        /* Quick Actions */
+        .sidebar-quick-actions {
+            padding: 1.5rem;
+            border-top: 1px solid var(--light-gray);
+            background: var(--light-gray);
+        }
+
+        .quick-action-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .quick-action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .quick-action-btn:hover::before {
+            left: 100%;
+        }
+
+        .quick-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 133, 162, 0.3);
+        }
+
+        .quick-action-btn.btn-outline {
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .quick-action-btn.btn-outline:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .quick-action-btn a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* Sidebar Toggle Button */
+        .sidebar-toggle {
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.2rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .sidebar-toggle:hover {
+            background: rgba(255, 133, 162, 0.1);
+            color: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+        .sidebar-toggle i {
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-toggle:hover i {
+            transform: rotate(180deg);
+        }
+
+        /* Navbar Styling */
+        .navbar-custom {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(255, 77, 121, 0.1);
+            padding: 10px 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color) !important;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 10px rgba(255, 77, 121, 0.3);
+        }
+
+        .search-box {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .search-box input {
+            border-radius: 50px;
+            border: 1px solid var(--medium-gray);
+            padding: 10px 20px;
+            width: 100%;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(255, 77, 121, 0.25);
+        }
+
+        .search-box button {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            background-color: var(--primary-color);
+            border: none;
+            color: white;
+            border-radius: 50px;
+            padding: 5px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .search-box button:hover {
+            background-color: var(--primary-dark);
+            transform: translateX(-2px);
+        }
+
+        .nav-link {
+            color: var(--text-color);
+            font-weight: 500;
+            padding: 8px 15px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            background-color: var(--primary-color);
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 80%;
+            left: 10%;
+        }
+
+        .btn-cart {
+            background-color: white;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            transition: all 0.3s;
+            border-radius: 50px;
+            padding: 8px 20px;
+        }
+
+        .btn-cart:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255, 77, 121, 0.3);
+        }
+
+        .btn-login {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            transition: all 0.3s;
+            border-radius: 50px;
+            padding: 8px 20px;
+        }
+
+        .btn-login:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255, 77, 121, 0.3);
+        }
+
+        /* Prevent body scroll when sidebar is open */
+        body.sidebar-open {
+            overflow: hidden;
+        }
+
+        /* Sidebar Styling */
+        .sidebar-custom {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(255, 77, 121, 0.1);
+            height: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-custom:hover {
+            box-shadow: 0 8px 25px rgba(255, 77, 121, 0.15);
+        }
+
+        .sidebar-custom h5 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-gray);
+        }
+
+        .sidebar-custom .list-group-item {
+            border: none;
+            padding: 10px 15px;
+            margin-bottom: 5px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .sidebar-custom .list-group-item:hover {
+            background-color: #fff0f5;
+            color: var(--primary-color);
+            transform: translateX(5px);
+        }
+
+        .sidebar-custom .list-group-item.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        @media (min-width: 768px) {
+            .sidebar-custom {
+                position: sticky;
+                top: 80px;
+                max-height: calc(100vh - 100px);
+                overflow-y: auto;
+            }
+        }
+
+        /* Product Card Styling */
+        .product-card {
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.4s, box-shadow 0.4s;
+            height: 100%;
+            background-color: white;
+            box-shadow: 0 5px 15px rgba(255, 77, 121, 0.08);
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(255, 77, 121, 0.15);
+        }
+
+        .product-card .card-img-top {
+            height: 200px;
+            object-fit: cover;
+            transition: all 0.5s ease;
+        }
+
+        .product-card:hover .card-img-top {
+            transform: scale(1.05);
+        }
+
+        .product-card .card-body {
+            padding: 1.25rem;
+        }
+
+        .product-card .card-title {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            height: 2.5rem;
+            overflow: hidden;
+            transition: color 0.3s ease;
+        }
+
+        .product-card:hover .card-title {
+            color: var(--primary-color);
+        }
+
+        .product-card .card-text {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+            height: 1.5rem;
+            overflow: hidden;
+        }
+
+        .product-card .price {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            margin: 0.5rem 0;
+        }
+
+        .product-card .btn-add-cart {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 8px 15px;
+            width: 100%;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card .btn-add-cart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255, 77, 121, 0.3);
+        }
+
+        .product-card .btn-add-cart::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.6s;
+        }
+
+        .product-card .btn-add-cart:hover::before {
+            left: 100%;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .btn-product-details,
+        .btn-wishlist {
+            flex: 1;
+            padding: 8px 0;
+            font-size: 0.85rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn-product-details {
+            background-color: white;
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+        }
+
+        .btn-product-details:hover {
+            background-color: var(--accent-color);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(138, 43, 226, 0.2);
+        }
+
+        .btn-wishlist {
+            background-color: white;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-wishlist:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(255, 77, 121, 0.2);
+        }
+
+        /* ENHANCED BANNER STYLES */
+        /* Main Hero Banner Enhancement */
+        .beautiful-banner {
+            background: linear-gradient(135deg, #ff85a2 0%, #a673ff 100%);
+            padding: 4rem 0;
+            border-radius: 15px;
+            margin: 2rem 0;
+            box-shadow: 0 15px 35px rgba(255, 77, 121, 0.2);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .beautiful-banner:hover {
+            box-shadow: 0 20px 40px rgba(255, 77, 121, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .banner-content {
+            position: relative;
+            z-index: 5;
+            padding: 0 2rem;
+        }
+
+        .banner-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1.2rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .banner-subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2.5rem;
+            max-width: 500px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .banner-buttons {
+            display: flex;
+            gap: 1rem;
+            animation: fadeInUp 0.8s ease-out 0.4s backwards;
+        }
+
+        .banner-btn {
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .banner-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .banner-btn.btn-primary {
+            background-color: white;
+            color: #ff85a2;
+            border: none;
+        }
+
+        .banner-btn.btn-primary:hover {
+            background-color: white;
+            color: #e26a8d;
+        }
+
+        .banner-btn.btn-outline-primary {
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .banner-btn.btn-outline-primary:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Button shine effect */
+        .banner-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.6s;
+            z-index: -1;
+        }
+
+        .banner-btn:hover::before {
+            left: 100%;
+        }
+
+        .banner-image {
+            border-radius: 10px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            transition: all 0.5s ease;
+            animation: floatImage 5s ease-in-out infinite;
+        }
+
+        .banner-image:hover {
+            transform: translateY(-5px) rotate(2deg);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Decorative shapes */
+        .banner-shape-1 {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -100px;
+            right: -100px;
+            z-index: 1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .banner-shape-2 {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            bottom: -50px;
+            left: -50px;
+            z-index: 1;
+            animation: float 8s ease-in-out infinite alternate-reverse;
+        }
+
+        /* Enhanced Carousel Banner */
+        .carousel-fade .carousel-item {
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        .carousel-fade .carousel-item.active {
+            opacity: 1;
+        }
+
+        .carousel-item img {
+            border-radius: 12px;
+            height: 400px;
+            object-fit: cover;
+            transition: transform 0.7s ease, filter 0.7s ease;
+            filter: brightness(0.9);
+        }
+
+        .carousel:hover .carousel-item.active img {
+            transform: scale(1.03);
+            filter: brightness(1);
+        }
+
+        .carousel-caption {
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+            border-radius: 0 0 12px 12px;
+            padding: 2rem;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: left;
+        }
+
+        .carousel-caption h3 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            animation: fadeInRight 0.8s ease-out;
+        }
+
+        .carousel-caption p {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            animation: fadeInRight 0.8s ease-out 0.2s backwards;
+        }
+
+        .btn-banner-action {
+            background-color: white;
+            color: #ff85a2;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            animation: fadeInRight 0.8s ease-out 0.4s backwards;
+        }
+
+        .btn-banner-action:hover {
+            background-color: #ff85a2;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Custom carousel controls */
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .carousel-control-prev {
+            left: 20px;
+        }
+
+        .carousel-control-next {
+            right: 20px;
+        }
+
+        .carousel:hover .carousel-control-prev,
+        .carousel:hover .carousel-control-next {
+            opacity: 1;
+        }
+
+        .carousel-control-prev:hover,
+        .carousel-control-next:hover {
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .carousel-indicators {
+            bottom: 20px;
+        }
+
+        .carousel-indicators button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            border: none;
+            margin: 0 5px;
+            transition: all 0.3s ease;
+        }
+
+        .carousel-indicators button.active {
+            background-color: white;
+            width: 30px;
+            border-radius: 10px;
+        }
+
+        /* Enhanced Promo Banner */
+        .promo-banner {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            margin: 3rem 0;
+            transition: all 0.5s ease;
+        }
+
+        .promo-banner:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            transform: translateY(-5px);
+        }
+
+        .promo-content {
+            position: relative;
+            z-index: 2;
+            padding: 3.5rem;
+        }
+
+        .promo-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff85a2 0%, #a673ff 100%);
+            /* -webkit-background-clip: text; */
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.2rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .promo-text {
+            font-size: 1.2rem;
+            color: #495057;
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .btn-app {
+            background: linear-gradient(135deg, #ff85a2 0%, #a673ff 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 77, 121, 0.2);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            animation: fadeInUp 0.8s ease-out 0.4s backwards;
+        }
+
+        .btn-app:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 77, 121, 0.3);
+            color: white;
+        }
+
+        /* Button shine effect */
+        .btn-app::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.6s;
+            z-index: -1;
+        }
+
+        .btn-app:hover::before {
+            left: 100%;
+        }
+
+        .promo-image {
+            max-height: 400px;
+            transform: perspective(1000px) rotateY(-15deg);
+            transition: all 0.5s ease;
+            filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.2));
+            animation: floatImage 5s ease-in-out infinite;
+        }
+
+        .promo-image:hover {
+            transform: perspective(1000px) rotateY(0deg);
+        }
+
+        /* Decorative elements for promo banner */
+        .promo-banner::before {
+            content: "";
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 133, 162, 0.1) 0%, rgba(255, 133, 162, 0) 70%);
+            border-radius: 50%;
+            top: -150px;
+            right: -150px;
+        }
+
+        .promo-banner::after {
+            content: "";
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(166, 115, 255, 0.1) 0%, rgba(166, 115, 255, 0) 70%);
+            border-radius: 50%;
+            bottom: -100px;
+            left: -100px;
+        }
+
+        /* Banner Section */
+        .banner-section {
+            margin-bottom: 2rem;
+        }
+
+        /* Categories Section */
+        .category-section {
+            margin-bottom: 2rem;
+        }
+
+        .category-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-gray);
+            position: relative;
+        }
+
+        .category-title::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 3px;
+            background-color: var(--primary-color);
+            bottom: -2px;
+            left: 0;
+        }
+
+        .category-card {
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 12px;
+            background-color: white;
+            box-shadow: 0 5px 15px rgba(255, 77, 121, 0.08);
+            transition: all 0.4s;
+            cursor: pointer;
+        }
+
+        .category-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(255, 77, 121, 0.12);
+            background: linear-gradient(135deg, #fff0f5 0%, #f3e5ff 100%);
+            color: var(--primary-color);
+        }
+
+        .category-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.8rem;
+            transition: all 0.4s;
+        }
+
+        .category-card:hover .category-icon {
+            color: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+        .category-name {
+            font-weight: 500;
+            color: var(--text-color);
+            transition: all 0.4s;
+        }
+
+        .category-card:hover .category-name {
+            color: var(--primary-color);
+        }
+
+        /* Footer Styling */
+        .footer {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            padding: 3rem 0 1.5rem;
+            margin-top: 3rem;
+            border-top-left-radius: 30px;
+            border-top-right-radius: 30px;
+        }
+
+        .footer h5 {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer h5::after {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 3px;
+            background-color: white;
+            bottom: -10px;
+            left: 0;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.75rem;
+            transition: all 0.3s;
+        }
+
+        .footer-links li:hover {
+            transform: translateX(5px);
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-icons a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .social-icons a:hover {
+            background-color: white;
+            color: var(--primary-color);
+            transform: translateY(-5px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Badges and Labels */
+        .badge-discount {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 50px;
+            font-weight: 500;
+            font-size: 0.8rem;
+            z-index: 2;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            animation: pulse 2s infinite;
+        }
+
+        .badge-new {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 50px;
+            font-weight: 500;
+            font-size: 0.8rem;
+            z-index: 2;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        @keyframes floatImage {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.05);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes ping {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            75%,
+            100% {
+                transform: scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            53%,
+            80%,
+            100% {
+                transform: translate3d(0, 0, 0);
+            }
+
+            40%,
+            43% {
+                transform: translate3d(0, -10px, 0);
+            }
+
+            70% {
+                transform: translate3d(0, -5px, 0);
+            }
+
+            90% {
+                transform: translate3d(0, -2px, 0);
+            }
+        }
+
+        @keyframes rotateIn {
+            from {
+                transform: rotate(-10deg) scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: rotate(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .slide-in-right {
+            animation: fadeInRight 0.6s ease-out;
+        }
+
+        .float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .rotate-in {
+            animation: rotateIn 0.5s ease-out forwards;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .banner-title {
+                font-size: 2.2rem;
+            }
+
+            .banner-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .promo-title {
+                font-size: 2rem;
+            }
+
+            .carousel-item img {
+                height: 350px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .beautiful-banner {
+                padding: 3rem 0;
+            }
+
+            .banner-title {
+                font-size: 1.8rem;
+            }
+
+            .banner-subtitle {
+                font-size: 1rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .banner-buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .banner-image {
+                margin-top: 2rem;
+            }
+
+            .carousel-item img {
+                height: 250px;
+            }
+
+            .carousel-caption {
+                padding: 1rem;
+            }
+
+            .carousel-caption h3 {
+                font-size: 1.5rem;
+            }
+
+            .promo-content {
+                padding: 2rem;
+            }
+
+            .promo-title {
+                font-size: 1.8rem;
+            }
+
+            .promo-text {
+                font-size: 1rem;
+                margin-bottom: 1.5rem;
+            }
+
+            /* Sidebar responsive */
+            .side-navigation {
+                width: 280px;
+                left: -280px;
+            }
+
+            :root {
+                --sidebar-width: 280px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .beautiful-banner {
+                padding: 2rem 0;
+            }
+
+            .banner-title {
+                font-size: 1.5rem;
+            }
+
+            .carousel-item img {
+                height: 200px;
+            }
+
+            .carousel-caption h3 {
+                font-size: 1.2rem;
+            }
+
+            /* Sidebar responsive */
+            .side-navigation {
+                width: 260px;
+                left: -260px;
+            }
+
+            :root {
+                --sidebar-width: 260px;
+            }
+
+            .sidebar-header {
+                padding: 1rem;
+            }
+
+            .sidebar-user-profile {
+                padding: 1rem;
+            }
+
+            .sidebar-quick-actions {
+                padding: 1rem;
+            }
+        }
+
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Focus States */
+        .sidebar-toggle:focus,
+        .nav-link-custom:focus,
+        .quick-action-btn:focus,
+        .sidebar-close:focus {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 2px;
+        }
+
+        /* Print Styles */
+        @media print {
+
+            .side-navigation,
+            .sidebar-overlay,
+            .sidebar-toggle {
+                display: none !important;
+            }
+        }
+
+        /* Add ripple effect CSS */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Side Navigation -->
+    <nav class="side-navigation" id="sideNavigation">
+        <!-- Sidebar Header -->
+        <div class="sidebar-header">
+            <a href="{% url 'home' %}" class="sidebar-brand">
+                <i class="fas fa-shopping-bag"></i>
+                <span>ShopSphere</span>
+            </a>
+            <button class="sidebar-close" id="sidebarClose" type="button">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- User Profile Section -->
+        {% if user.is_authenticated %}
+        <div class="sidebar-user-profile">
+            <div class="user-avatar">
+                {% if user.profile.profile_picture %}
+                <img src="{{ user.profile.profile_picture.url }}" alt="{{ user.username }}'s profile picture"
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="user-avatar-fallback" style="display: none;">
+                    {{ user.username.0|upper }}
+                </div>
+                {% else %}
+                <div class="user-avatar-fallback">
+                    {{ user.username.0|upper }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="user-info">
+                <h6>{{ user.username }}</h6>
+                <p>{{ user.email }}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Navigation Menu -->
+        <div class="sidebar-nav">
+            <!-- Main Navigation -->
+            <div class="nav-section">
+                <div class="nav-section-title">Main Menu</div>
+                <div class="nav-item">
+                    <a href="{% url 'home' %}" class="nav-link-custom">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="{% url 'view_cart' %}" class="nav-link-custom">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Shopping Cart</span>
+                        {% if cart_item_count > 0 %}
+                        <span class="nav-badge">{{ cart_item_count }}</span>
+                        {% endif %}
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="{% url 'wishlist' %}" class="nav-link-custom">
+                        <i class="fas fa-heart"></i>
+                        <span>Wishlist</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <li class="nav-item">
+                       
+                        <a class="nav-link" href="{% url 'dealsandoffers:deals_list' %}">
+                            <i class="fas fa-tags"></i>   Deals & Offers </a>      
+                       </li>                       
+                      
+                    </a>
+                </div>
+            </div>
+
+            <!-- Categories -->
+            <div class="nav-section">
+                <div class="nav-section-title">Categories</div>
+                {% for cat in categories %}
+                <div class="nav-item">
+                    <a href="{% url 'category_products' cat.name %}" class="nav-link-custom">
+                        {% if cat.name == 'Electronics' %}
+                        <i class="fas fa-laptop-code"></i>
+                        {% elif cat.name == 'Clothing' %}
+                        <i class="fas fa-tshirt"></i>
+                        {% elif cat.name == 'Books' %}
+                        <i class="fas fa-book-open"></i>
+                        {% elif cat.name == 'Home' %}
+                        <i class="fas fa-home"></i>
+                        {% elif cat.name == 'Beauty' %}
+                        <i class="fas fa-spa"></i>
+                        {% elif cat.name == 'Jewelry' %}
+                        <i class="fas fa-gem"></i>
+                        {% elif cat.name == 'Sports' %}
+                        <i class="fas fa-running"></i>
+                        {% elif cat.name == 'Toys' %}
+                        <i class="fas fa-gamepad"></i>
+                        {% elif cat.name == 'Food' %}
+                        <i class="fas fa-utensils"></i>
+                        {% elif cat.name == 'Health' %}
+                        <i class="fas fa-heartbeat"></i>
+                        {% else %}
+                        <i class="fas fa-tag"></i>
+                        {% endif %}
+                        <span>{{ cat.name }}</span>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Account -->
+            {% if user.is_authenticated %}
+            <div class="nav-section">
+                <div class="nav-section-title">My Account</div>
+                <div class="nav-item">
+                    <a href="{% if user.is_superuser %}{% url 'admin_dashboard' %}{% else %}{% url 'user_dashboard' %}{% endif %}"
+                        class="nav-link-custom">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="{% url 'orders' %}" class="nav-link-custom">
+                        <i class="fas fa-box"></i>
+                        <span>My Orders</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="{% url 'profile' %}" class="nav-link-custom">
+                        <i class="fas fa-user"></i>
+                        <span>My Profile</span>
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Support -->
+            <div class="nav-section">
+                <div class="nav-section-title">Support</div>
+                <div class="nav-item">
+                    <a href="{% url 'contact' %}" class="nav-link-custom">
+                        <i class="fas fa-envelope"></i>
+                        <span>Contact Us</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="{% url 'faq' %}" class="nav-link-custom">
+                        <i class="fas fa-question-circle"></i>
+                        <span>FAQ</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="{% url 'about' %}" class="nav-link-custom">
+                        <i class="fas fa-info-circle"></i>
+                        <span>About Us</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="sidebar-quick-actions">
+            {% if user.is_authenticated %}
+            <button class="quick-action-btn" type="button">
+                <i class="fas fa-mobile-alt me-2"></i>
+                Download App
+            </button>
+            <button class="quick-action-btn btn-outline" type="button">
+                <i class="fas fa-sign-out-alt me-2"></i>
+                <a href="{% url 'logout' %}">Logout</a>
+            </button>
+            {% else %}
+            <button class="quick-action-btn" type="button">
+                <i class="fas fa-sign-in-alt me-2"></i>
+                <a href="{% url 'login' %}">Login</a>
+            </button>
+            <button class="quick-action-btn btn-outline" type="button">
+                <i class="fas fa-user-plus me-2"></i>
+                Sign Up
+            </button>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <!-- Sidebar Toggle Button -->
+            <button class="sidebar-toggle me-3" id="sidebarToggle" type="button">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <i class="fas fa-shopping-bag me-2"></i>ShopSphere
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <form class="search-box mx-auto my-2 my-lg-0" role="search" method="GET" action="{% url 'search' %}">
+                    <input type="search" name="q" placeholder="Search for products, brands and more..." required>
+                    <button type="submit"><i class="fas fa-search"></i></button>
+                </form>
+
+                <ul class="navbar-nav ms-auto">
+                    <div class="nav-item">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'dealsandoffers:deals_list' %}">
+                                <i class="fas fa-tags me-2"></i>
+                                <span>Deals & Offers</span>
+                            </a>
+                        </li>
+                        
+                    
+                        </a>
+                        </div>
+                  
+                    <li class="nav-item">
+                        <a class="btn btn-cart me-2" href="{% url 'view_cart' %}">
+                            <i class="fas fa-shopping-cart me-1"></i> Cart {% if cart_item_count > 0 %}<span
+                                class="badge bg-danger">{{ cart_item_count }}</span>{% endif %}
+                        </a>
+                    </li>
+
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            <i class="fas fa-user-circle me-1"></i> {{ user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item"
+                                    href="{% if user.is_superuser %}{% url 'admin_dashboard' %}{% else %}{% url 'user_dashboard' %}{% endif %}">
+                                    <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li><a class="dropdown-item" href="{% url 'orders'%}"><i class="fas fa-box me-2"></i> My
+                                    Orders</a></li>
+                            <li><a class="dropdown-item" href="{% url 'profile'%}"><i class="fas fa-user me-2"></i>
+                                    My Profile</a>
+                            </li>
+                            <li><a class="dropdown-item" href="{%url 'wishlist'%}"><i class="fas fa-heart me-2"></i>
+                                    Wishlist</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item text-danger" href="{% url 'logout' %}"><i
+                                        class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="btn btn-login" href="{% url 'login' %}"><i class="fas fa-sign-in-alt me-1"></i>
+                            Login</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <main>
+        {% block content %}
+        <!-- child templates insert content here -->
+        {% endblock %}
+    </main>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 mb-4">
+                    <h5>Shop Non-Stop</h5>
+                    <p>Trusted by millions of customers worldwide</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5>Customer Policies</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">Return Policy</a></li>
+                        <li><a href="#">Terms of Use</a></li>
+                        <li><a href="#">Security</a></li>
+                        <li><a href="#">Privacy</a></li>
+                        <li><a href="#">Sitemap</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5>Help</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">Payments</a></li>
+                        <li><a href="#">Shipping</a></li>
+                        <li><a href="#">Cancellation & Returns</a></li>
+                        <li><a href="{%url 'about'%}">About us</a></li>
+                        <li><a href="{%url 'faq'%}">FAQ</a></li>
+                        <li><a href="#">Report Infringement</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <a href="{% url 'contact' %}" class="text-muted">Contact Us</a>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-envelope me-2"></i> support@shopsphere.com</li>
+                        <li><i class="fas fa-phone-alt me-2"></i> +1 (800) 123-4567</li>
+                        <li><i class="fas fa-map-marker-alt me-2"></i> 123 Commerce St, Market City</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>© 2025 ShopSphere. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        // Sidebar functionality - FIXED VERSION
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sideNavigation = document.getElementById('sideNavigation');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            const sidebarClose = document.getElementById('sidebarClose');
+
+            // Debug logging
+            console.log('Sidebar elements:', {
+                toggle: sidebarToggle,
+                nav: sideNavigation,
+                overlay: sidebarOverlay,
+                close: sidebarClose
+            });
+
+            // Open sidebar function
+            function openSidebar() {
+                console.log('Opening sidebar...');
+                if (sideNavigation && sidebarOverlay) {
+                    sideNavigation.classList.add('show');
+                    sidebarOverlay.classList.add('show');
+                    document.body.classList.add('sidebar-open');
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+
+            // Close sidebar function
+            function closeSidebar() {
+                console.log('Closing sidebar...');
+                if (sideNavigation && sidebarOverlay) {
+                    sideNavigation.classList.remove('show');
+                    sidebarOverlay.classList.remove('show');
+                    document.body.classList.remove('sidebar-open');
+                    document.body.style.overflow = '';
+                }
+            }
+
+            // Event listeners with error handling
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Toggle button clicked');
+                    openSidebar();
+                });
+            }
+
+            if (sidebarClose) {
+                sidebarClose.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Close button clicked');
+                    closeSidebar();
+                });
+            }
+
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Overlay clicked');
+                    closeSidebar();
+                });
+            }
+
+            // Close sidebar on escape key
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && sideNavigation && sideNavigation.classList.contains('show')) {
+                    console.log('Escape key pressed');
+                    closeSidebar();
+                }
+            });
+
+            // Close sidebar on window resize if mobile
+            window.addEventListener('resize', function () {
+                if (window.innerWidth > 768 && sideNavigation && sideNavigation.classList.contains('show')) {
+                    console.log('Window resized, closing sidebar');
+                    closeSidebar();
+                }
+            });
+
+            // Prevent clicks inside sidebar from closing it
+            if (sideNavigation) {
+                sideNavigation.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                });
+            }
+
+            // Add active class to current page
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.nav-link-custom');
+
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Quick action button functionality
+            const quickActionBtns = document.querySelectorAll('.quick-action-btn');
+            quickActionBtns.forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    // If button contains a link, let the link handle the navigation
+                    const link = this.querySelector('a');
+                    if (link) {
+                        window.location.href = link.href;
+                    }
+                });
+            });
+
+            // Add to cart animation
+            const addToCartButtons = document.querySelectorAll('.btn-add-cart');
+
+            addToCartButtons.forEach(button => {
+                button.addEventListener('click', function (e) {
+                    // Add animation class
+                    this.innerHTML = '<i class="fas fa-check me-2"></i>Added';
+                    this.classList.add('bg-success');
+                    this.classList.add('shake');
+
+                    // Reset after 1 second
+                    setTimeout(() => {
+                        this.innerHTML = '<i class="fas fa-shopping-cart me-2"></i>Add to Cart';
+                        this.classList.remove('bg-success');
+                        this.classList.remove('shake');
+                    }, 1000);
+                });
+            });
+
+            // Initialize tooltips
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // Add fade-in animation to products
+            const productCards = document.querySelectorAll('.product-card');
+            productCards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('fade-in');
+                }, index * 100);
+            });
+
+            // Add slide-in animation to categories
+            const categoryCards = document.querySelectorAll('.category-card');
+            categoryCards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('slide-in-right');
+                }, index * 100);
+            });
+
+            // Add floating animation to banners
+            const banners = document.querySelectorAll('.beautiful-banner');
+            banners.forEach(banner => {
+                banner.classList.add('float');
+            });
+
+            // Add heartbeat animation to discount badges
+            const discountBadges = document.querySelectorAll('.badge-discount');
+            discountBadges.forEach(badge => {
+                badge.classList.add('heartbeat');
+            });
+
+            // Add bounce animation to new badges
+            const newBadges = document.querySelectorAll('.badge-new');
+            newBadges.forEach(badge => {
+                badge.classList.add('bounce');
+            });
+
+            // Add rotate-in animation to category icons
+            const categoryIcons = document.querySelectorAll('.category-icon');
+            categoryIcons.forEach((icon, index) => {
+                setTimeout(() => {
+                    icon.classList.add('rotate-in');
+                }, index * 100);
+            });
+
+            // Add hover effect for banner image
+            const bannerImage = document.querySelector('.banner-image');
+            if (bannerImage) {
+                bannerImage.addEventListener('mouseenter', function () {
+                    this.style.transform = 'translateY(-5px) rotate(2deg)';
+                    this.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.15)';
+                });
+
+                bannerImage.addEventListener('mouseleave', function () {
+                    this.style.transform = '';
+                    this.style.boxShadow = '';
+                });
+            }
+
+            // Add animation to carousel captions
+            const carouselItems = document.querySelectorAll('.carousel-item');
+            carouselItems.forEach(item => {
+                item.addEventListener('transitionend', function () {
+                    if (this.classList.contains('active')) {
+                        const caption = this.querySelector('.carousel-caption');
+                        if (caption) {
+                            caption.style.animation = 'none';
+                            setTimeout(() => {
+                                caption.style.animation = 'fadeInUp 0.5s ease-out';
+                            }, 10);
+                        }
+                    }
+                });
+            });
+
+            // Sidebar navigation hover effects
+            const sidebarNavLinks = document.querySelectorAll('.nav-link-custom');
+            sidebarNavLinks.forEach(link => {
+                link.addEventListener('mouseenter', function () {
+                    const icon = this.querySelector('i');
+                    if (icon) {
+                        icon.style.transform = 'scale(1.1) rotate(5deg)';
+                    }
+                });
+
+                link.addEventListener('mouseleave', function () {
+                    const icon = this.querySelector('i');
+                    if (icon) {
+                        icon.style.transform = '';
+                    }
+                });
+            });
+
+            // Quick action buttons ripple effect
+            quickActionBtns.forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+
+                    ripple.style.width = ripple.style.height = size + 'px';
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+                    ripple.classList.add('ripple');
+
+                    this.appendChild(ripple);
+
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+        });
+
+        // Sticky navbar on scroll
+        window.addEventListener('scroll', function () {
+            const navbar = document.querySelector('.navbar-custom');
+            if (window.scrollY > 50) {
+                navbar.style.padding = '5px 0';
+                navbar.style.boxShadow = '0 4px 15px rgba(255, 77, 121, 0.15)';
+            } else {
+                navbar.style.padding = '10px 0';
+                navbar.style.boxShadow = '0 4px 12px rgba(255, 77, 121, 0.1)';
+            }
+        });
+
+        // Hover effect for product cards
+        const productCards = document.querySelectorAll('.product-card');
+        productCards.forEach(card => {
+            card.addEventListener('mouseenter', function () {
+                this.style.transform = 'translateY(-8px)';
+                this.style.boxShadow = '0 15px 30px rgba(255, 77, 121, 0.15)';
+            });
+
+            card.addEventListener('mouseleave', function () {
+                this.style.transform = '';
+                this.style.boxShadow = '';
+            });
+        });
+
+        // Add hover effects to buttons
+        const buttons = document.querySelectorAll('.btn');
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', function () {
+                this.style.transform = 'translateY(-2px)';
+            });
+
+            button.addEventListener('mouseleave', function () {
+                this.style.transform = '';
+            });
+        });
+    </script>
+</body>
+
+</html>
+

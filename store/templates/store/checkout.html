@@ -1,0 +1,584 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Checkout - ShopSphere{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --primary-color: #ff85a2;
+        --primary-dark: #e26a8d;
+        --accent-color: #a673ff;
+        --accent-dark: #8e52e2;
+        --light-gray: #f2f2f2;
+        --text-color: #212529;
+        --secondary-color: #fff9fb;
+    }
+
+    .checkout-hero {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+        color: white;
+        padding: 3rem 0;
+        margin-bottom: 3rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .checkout-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        pointer-events: none;
+        opacity: 0.3;
+    }
+
+    .checkout-hero h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        animation: fadeInUp 0.8s ease-out;
+    }
+
+    .checkout-hero p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        animation: fadeInUp 0.8s ease-out 0.2s backwards;
+    }
+
+    .checkout-card {
+        background: white;
+        border-radius: 25px;
+        box-shadow: 0 25px 70px rgba(255, 133, 162, 0.1);
+        border: none;
+        overflow: hidden;
+        animation: slideInUp 0.8s ease-out 0.4s backwards;
+        transition: all 0.3s ease;
+    }
+
+    .checkout-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 35px 90px rgba(255, 133, 162, 0.15);
+    }
+
+    .checkout-card .card-body {
+        padding: 3rem;
+    }
+
+    .section-title {
+        color: var(--primary-color);
+        font-weight: 700;
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .section-title i {
+        font-size: 1.3rem;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+        -webkit-text-fill-color: transparent;
+    }
+
+    .section-title::after {
+        content: '';
+        flex: 1;
+        height: 2px;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+        opacity: 0.3;
+        margin-left: 1rem;
+    }
+
+    .form-floating {
+        margin-bottom: 1.5rem;
+        animation: fadeInLeft 0.6s ease-out;
+    }
+
+    .form-floating:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+
+    .form-floating:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .form-floating:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+
+    .form-floating:nth-child(4) {
+        animation-delay: 0.4s;
+    }
+
+    .form-floating:nth-child(5) {
+        animation-delay: 0.5s;
+    }
+
+    .form-control,
+    .form-select {
+        border: 2px solid #e5e7eb;
+        border-radius: 15px;
+        padding: 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background-color: #fafafa;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(255, 133, 162, 0.25);
+        background-color: white;
+        transform: translateY(-2px);
+    }
+
+    .form-control:hover,
+    .form-select:hover {
+        border-color: var(--primary-color);
+        background-color: white;
+    }
+
+    .form-floating label {
+        color: #6b7280;
+        font-weight: 500;
+    }
+
+    .order-summary {
+        background: linear-gradient(135deg, #fff0f5 0%, #f3e5ff 100%);
+        border-radius: 20px;
+        padding: 2rem;
+        border: 1px solid rgba(255, 133, 162, 0.2);
+        animation: slideInRight 0.8s ease-out 0.6s backwards;
+        position: sticky;
+        top: 2rem;
+    }
+
+    .order-item {
+        background: white;
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border: 1px solid rgba(255, 133, 162, 0.1);
+        transition: all 0.3s ease;
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .order-item:hover {
+        transform: translateX(5px);
+        box-shadow: 0 5px 15px rgba(255, 133, 162, 0.1);
+    }
+
+    .order-item:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+
+    .order-item:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .order-item:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+
+    .order-total {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-top: 1rem;
+        border: 2px solid var(--primary-color);
+        animation: pulse 2s infinite;
+    }
+
+    .btn-back {
+        background: transparent;
+        color: var(--primary-color);
+        border: 2px solid var(--primary-color);
+        border-radius: 50px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        animation: fadeInLeft 0.6s ease-out 0.7s backwards;
+    }
+
+    .btn-back:hover {
+        background: var(--primary-color);
+        color: white;
+        transform: translateX(-5px);
+    }
+
+    .btn-place-order {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        animation: fadeInRight 0.6s ease-out 0.7s backwards;
+    }
+
+    .btn-place-order::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .btn-place-order:hover::before {
+        left: 100%;
+    }
+
+    .btn-place-order:hover {
+        transform: translateX(5px);
+        box-shadow: 0 10px 25px rgba(255, 133, 162, 0.3);
+        color: white;
+    }
+
+    .progress-steps {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 3rem;
+        animation: fadeInDown 0.8s ease-out 0.2s backwards;
+    }
+
+    .step {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: white;
+        border-radius: 50px;
+        margin: 0 0.5rem;
+        box-shadow: 0 5px 15px rgba(255, 133, 162, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .step.active {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+        color: white;
+        transform: scale(1.1);
+    }
+
+    .step i {
+        font-size: 1.2rem;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(50px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes fadeInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes fadeInRight {
+        from {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes pulse {
+
+        0%,
+        100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.02);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .checkout-card .card-body {
+            padding: 2rem;
+        }
+
+        .order-summary {
+            position: static;
+            margin-top: 2rem;
+        }
+
+        .progress-steps {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .step {
+            margin: 0.25rem 0;
+        }
+    }
+</style>
+
+<!-- Hero Section -->
+<section class="checkout-hero">
+    <div class="container text-center position-relative">
+        <h2><i class="fas fa-credit-card me-3"></i>Secure Checkout</h2>
+        <p>Complete your order safely and securely</p>
+    </div>
+</section>
+
+<!-- Progress Steps -->
+<div class="container">
+    <div class="progress-steps">
+        <div class="step">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Cart</span>
+        </div>
+        <div class="step active">
+            <i class="fas fa-credit-card"></i>
+            <span>Checkout</span>
+        </div>
+        <div class="step">
+            <i class="fas fa-check-circle"></i>
+            <span>Complete</span>
+        </div>
+    </div>
+</div>
+
+<!-- Checkout Form -->
+<div class="container pb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-11">
+            <div class="card checkout-card">
+                <div class="card-body">
+                    <div class="row g-5">
+                        <!-- Shipping Information -->
+                        <div class="col-md-7">
+                            <h5 class="section-title">
+                                <i class="fas fa-shipping-fast"></i>
+                                Shipping Information
+                            </h5>
+                            <form method="POST" class="needs-validation" novalidate id="checkoutForm">
+                                {% csrf_token %}
+
+                                <!-- Full Name -->
+                                <div class="form-floating">
+                                    <input type="text" name="name" id="name" class="form-control" placeholder="John Doe"
+                                        value="{{ initial.name }}" required>
+                                    <label for="name"><i class="fas fa-user me-2"></i>Full Name</label>
+                                </div>
+
+                                <!-- Email -->
+                                <div class="form-floating">
+                                    <input type="email" name="email" id="email" class="form-control"
+                                        placeholder="you@example.com" value="{{ initial.email }}" required>
+                                    <label for="email"><i class="fas fa-envelope me-2"></i>Email Address</label>
+                                </div>
+
+                                <!-- Phone -->
+                                <div class="form-floating">
+                                    <input type="tel" name="phone" id="phone" class="form-control"
+                                        placeholder="9876543210" pattern="[0-9]{10}"
+                                        title="Enter a valid 10-digit phone number" required>
+                                    <label for="phone"><i class="fas fa-phone me-2"></i>Phone Number</label>
+                                </div>
+
+                                <!-- Address -->
+                                <div class="form-floating">
+                                    <textarea name="address" id="address" class="form-control" placeholder="123 Main St"
+                                        style="height: 120px" required></textarea>
+                                    <label for="address"><i class="fas fa-map-marker-alt me-2"></i>Address</label>
+                                </div>
+
+                                <!-- Shipping Method -->
+                                <div class="form-floating">
+                                    <select name="shipping_method" id="shipping_method" class="form-select" required>
+                                        <option value="">Select a shipping method</option>
+                                        <option value="standard">Standard (₹50 - 4-6 days)</option>
+                                        <option value="express">Express (₹100 - 1-2 days)</option>
+                                    </select>
+                                    <label for="shipping_method"><i class="fas fa-truck me-2"></i>Shipping
+                                        Method</label>
+                                </div>
+
+                                <!-- Form Actions -->
+                                <div class="d-flex justify-content-between mt-4">
+                                    <a href="{% url 'view_cart' %}" class="btn btn-back">
+                                        <i class="fas fa-arrow-left me-2"></i>Back to Cart
+                                    </a>
+                                    <button type="submit" class="btn btn-place-order">
+                                        <i class="fas fa-lock me-2"></i>Place Order
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Order Summary -->
+                        <div class="col-md-5">
+                            <h5 class="section-title">
+                                <i class="fas fa-receipt"></i>
+                                Order Summary
+                            </h5>
+                            <div class="order-summary">
+                                {% for item in items %}
+                                <div class="order-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <div class="fw-semibold">{{ item.product.title }}</div>
+                                            <small class="text-muted">Quantity: {{ item.quantity }}</small>
+                                        </div>
+                                        <div class="fw-bold text-primary">₹{{ item.subtotal }}</div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+
+                                <div class="order-total">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="fw-bold fs-5">Total Amount</div>
+                                        <div class="fw-bold fs-4 text-success">₹{{ total }}</div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-3">
+                                    <small class="text-muted">
+                                        <i class="fas fa-shield-alt me-2"></i>
+                                        Your payment information is secure and encrypted. A confirmation email will be
+                                        sent after placing your order.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Form validation
+        const form = document.getElementById('checkoutForm');
+        const inputs = form.querySelectorAll('.form-control, .form-select');
+
+        inputs.forEach(input => {
+            input.addEventListener('blur', function () {
+                validateField(this);
+            });
+
+            input.addEventListener('input', function () {
+                if (this.classList.contains('is-invalid')) {
+                    validateField(this);
+                }
+            });
+        });
+
+        function validateField(field) {
+            if (field.checkValidity()) {
+                field.classList.remove('is-invalid');
+                field.classList.add('is-valid');
+            } else {
+                field.classList.remove('is-valid');
+                field.classList.add('is-invalid');
+            }
+        }
+
+        // Form submission
+        form.addEventListener('submit', function (e) {
+            let isValid = true;
+
+            inputs.forEach(input => {
+                validateField(input);
+                if (!input.checkValidity()) {
+                    isValid = false;
+                }
+            });
+
+            if (!isValid) {
+                e.preventDefault();
+                // Scroll to first invalid field
+                const firstInvalid = form.querySelector('.is-invalid');
+                if (firstInvalid) {
+                    firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstInvalid.focus();
+                }
+            } else {
+                // Show loading state
+                const submitBtn = form.querySelector('.btn-place-order');
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+                submitBtn.disabled = true;
+            }
+        });
+
+        // Phone number formatting
+        const phoneInput = document.getElementById('phone');
+        phoneInput.addEventListener('input', function () {
+            this.value = this.value.replace(/\D/g, '').slice(0, 10);
+        });
+    });
+</script>
+
+<!-- Razorpay Script -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+{% endblock %}

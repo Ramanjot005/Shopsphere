@@ -1,0 +1,107 @@
+{% extends 'store/base.html' %}
+{% block title %}Update Profile{% endblock %}
+
+{% block content %}
+<section class="profile-header"
+    style="background: linear-gradient(to right, #f43f5e, #a855f7); padding: 1.5rem 0; color: white;">
+    <div class="container py-4">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="d-flex align-items-center mb-3">
+                    <a href="{% url 'profile' %}" class="back-link"
+                        style="width: 36px; height: 36px; background: rgba(255, 255, 255, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none;">
+                        <i class="bi bi-arrow-left"></i>
+                    </a>
+                    <h3 class="fw-bold mb-0 ms-3">Update Profile</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="profile-content" style="background-color: #f9fafb;">
+    <div class="container pb-5">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                {% if messages %}
+                <div class="alert-container mb-4">
+                    {% for message in messages %}
+                    <div class="alert alert-success border-0 shadow-sm">
+                        <div class="d-flex align-items-center">
+                            <div class="alert-icon"
+                                style="width: 24px; height: 24px; background-color: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 0.75rem;">
+                                ✓</div>
+                            <div>{{ message }}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+
+                            <div class="profile-avatar-container mb-4">
+                                {% if user.profile.image %}
+                                <img src="{{ user.profile.image.url }}" alt="Profile Picture"
+                                    style="width:100px; height:100px; border-radius:50%; object-fit:cover;">
+                                {% else %}
+                                <div
+                                    style="width:100px; height:100px; background: linear-gradient(to right, #f43f5e, #a855f7); border-radius:50%; display: flex; align-items: center; justify-content: center; font-size:2.5rem; font-weight:bold; color:white;">
+                                    {{ user.username.0|upper }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group mb-4">
+                                <label class="form-label">Upload Profile Picture</label>
+                                <input type="file" name="profile_image" class="form-control">
+                            </div>
+
+                            <div class="form-group mb-4">
+                                <label class="form-label">Username</label>
+                                <input type="text" name="username" value="{{ user.username }}" class="form-control"
+                                    required>
+                            </div>
+
+                            <div class="form-group mb-4">
+                                <label class="form-label">Email</label>
+                                <input type="email" name="email" value="{{ user.email }}" class="form-control" required>
+                            </div>
+
+                            <div class="form-group mb-4">
+                                <label class="form-label">Phone Number (Optional)</label>
+                                <input type="tel" name="phone" value="{{ user.customer.phone }}" class="form-control">
+                            </div>
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                                <a href="{% url 'profile' %}" class="btn btn-light px-4">Cancel</a>
+                                <button type="submit" class="btn btn-pink px-4"
+                                    style="background-color: #f43f5e; border-color: #f43f5e; color: white;">Save
+                                    Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <h5 class="fw-bold mb-3">Security Settings</h5>
+                            <div class="d-grid gap-2">
+                                <a href="{% url 'users:change-password' %}" class="btn btn-outline-secondary text-start">
+
+                                <a href="#" class="btn btn-outline-secondary text-start">
+                                    <i class="bi bi-shield-lock me-2"></i> Two-Factor Authentication
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

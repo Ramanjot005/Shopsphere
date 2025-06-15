@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Track Your Order{% endblock %}
+
+{% block content %}
+<div class="container"
+    style="max-width: 500px; margin: 50px auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+    <h2 class="mb-4">Track Your Order</h2>
+
+    <form method="GET" action="{% url 'track_order_search' %}">
+        <div class="mb-3">
+            <label for="order_number" class="form-label">Order Number</label>
+            <input type="text" id="order_number" name="order_number" class="form-control"
+                placeholder="Enter your order number" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Track Order</button>
+    </form>
+
+    {% if error %}
+    <div class="alert alert-danger mt-3">{{ error }}</div>
+    {% endif %}
+</div>
+{% endblock %}

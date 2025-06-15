@@ -1,0 +1,195 @@
+{% extends 'store/base.html' %}
+{% block title %}Order #{{ order.id }}{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #f4f6fa;
+    }
+
+    .order-card {
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        overflow: hidden;
+        animation: fadeInUp 0.6s ease;
+    }
+
+    .order-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 16px 35px rgba(0, 0, 0, 0.12);
+    }
+
+    .order-header {
+        background: linear-gradient(135deg,#ff85a2,#ff85a2);
+        color: #fff;
+        padding: 1rem;
+    }
+
+    .order-header h4 {
+        font-weight: 700;
+        margin-bottom: 0.2rem;
+    }
+
+    .order-status {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        border-radius: 0.5rem;
+        display: inline-flex;
+        align-items: center;
+        animation: bounceIn 1s;
+    }
+
+    .order-item {
+        padding: 1rem 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .order-item img {
+        border-radius: 0.5rem;
+        max-height: 90px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .order-item:hover img {
+        transform: scale(1.05);
+    }
+
+    .order-summary {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #343a40;
+    }
+
+    .btn-back {
+        font-size: 0.9rem;
+        font-weight: 500;
+        background-color: #ffffff;
+        color: #4e73df;
+        border: 1px solid #dee2e6;
+        transition: all 0.3s ease;
+    }
+
+    .btn-back:hover {
+        background-color: #e2e6ea;
+        transform: scale(1.05);
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes bounceIn {
+
+        0%,
+        20%,
+        40%,
+        60%,
+        80%,
+        100% {
+            animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+        }
+
+        0% {
+            opacity: 0;
+            transform: scale3d(0.3, 0.3, 0.3);
+        }
+
+        20% {
+            transform: scale3d(1.1, 1.1, 1.1);
+        }
+
+        40% {
+            transform: scale3d(0.9, 0.9, 0.9);
+        }
+
+        60% {
+            opacity: 1;
+            transform: scale3d(1.03, 1.03, 1.03);
+        }
+
+        80% {
+            transform: scale3d(0.97, 0.97, 0.97);
+        }
+
+        100% {
+            transform: scale3d(1, 1, 1);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .order-summary {
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<div class="container py-5">
+    <div class="order-card bg-white animate__animated animate__fadeInUp">
+        <!-- Header -->
+        <div class="order-header d-flex justify-content-between align-items-center">
+            <div>
+                <h4><i class="bi bi-receipt-cutoff me-2 animate__animated animate__bounceIn"></i>Order #{{ order.id }}
+                </h4>
+                <small>Placed on {{ order.created_at|date:"F d, Y" }}</small>
+            </div>
+            <a href="{% url 'orders' %}" class="btn btn-back animate__animated animate__fadeInRight">
+                <i class="bi bi-arrow-left"></i> Back to Orders
+            </a>
+        </div>
+
+        <!-- Body -->
+        <div class="p-4">
+            <!-- Status -->
+            <div class="mb-4">
+                <span class="order-status bg-success text-white me-2 animate__animated animate__zoomIn">
+                    <i class="bi bi-check-circle-fill me-1"></i> {{ order.status }}
+                </span>
+                <span class="order-status 
+                    {% if order.approval_status == 'Approved' %}bg-success text-white
+                    {% elif order.approval_status == 'Rejected' %}bg-danger text-white
+                    {% else %}bg-warning text-dark{% endif %} animate__animated animate__zoomIn">
+                    <i class="bi bi-info-circle-fill me-1"></i> {{ order.approval_status }}
+                </span>
+            </div>
+
+            <!-- Items -->
+            {% for item in order.items.all %}
+            <div class="row order-item align-items-center">
+                <div class="col-md-2 col-4">
+                    {% if item.product.image %}
+                    <img src="{{ item.product.image.url }}" alt="{{ item.product.title }}" class="img-fluid">
+                    {% else %}
+                    <div class="bg-light d-flex align-items-center justify-content-center" style="height:90px;">
+                        <i class="bi bi-image fs-2 text-muted"></i>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="col-md-7 col-8">
+                    <h6 class="mb-1">{{ item.product.title }}</h6>
+                    <p class="mb-0 text-muted">Price: ${{ item.price }} × {{ item.quantity }}</p>
+                </div>
+                <div class="col-md-3 text-end">
+                    <strong>${{ item.subtotal }}</strong>
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- Total -->
+            <div class="d-flex justify-content-end mt-4">
+                <div class="order-summary">Total: ${{ order.total_price }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
